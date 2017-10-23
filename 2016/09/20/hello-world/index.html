@@ -6,14 +6,19 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Archives: 2017 | Lwenli_blog</title>
+  <title>生成环境和开发环境 | Lwenli_blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Lwenli_blog">
-<meta property="og:url" content="http://yoursite.com/archives/2017/index.html">
+  <meta name="description" content="注意：一定要区分开开发环境和生产环境，不可将devtool组件用于线上生产环境，所以代码打包的时候就要作区分  涉及到的知识点  npm scripts process.env.NODE_ENV 环境变量 cross-env package 123456package.json&amp;quot;scripts&amp;quot;: &amp;#123;    &amp;quot;start&amp;quot;: &amp;quot;cros">
+<meta name="keywords" content="js,development 环境,production 环境">
+<meta property="og:type" content="article">
+<meta property="og:title" content="生成环境和开发环境">
+<meta property="og:url" content="http://yoursite.com/2016/09/20/hello-world/index.html">
 <meta property="og:site_name" content="Lwenli_blog">
+<meta property="og:description" content="注意：一定要区分开开发环境和生产环境，不可将devtool组件用于线上生产环境，所以代码打包的时候就要作区分  涉及到的知识点  npm scripts process.env.NODE_ENV 环境变量 cross-env package 123456package.json&amp;quot;scripts&amp;quot;: &amp;#123;    &amp;quot;start&amp;quot;: &amp;quot;cros">
+<meta property="og:updated_time" content="2017-10-23T04:38:40.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Lwenli_blog">
+<meta name="twitter:title" content="生成环境和开发环境">
+<meta name="twitter:description" content="注意：一定要区分开开发环境和生产环境，不可将devtool组件用于线上生产环境，所以代码打包的时候就要作区分  涉及到的知识点  npm scripts process.env.NODE_ENV 环境变量 cross-env package 123456package.json&amp;quot;scripts&amp;quot;: &amp;#123;    &amp;quot;start&amp;quot;: &amp;quot;cros">
   
     <link rel="alternative" href="/atom.xml" title="Lwenli_blog" type="application/atom+xml">
   
@@ -149,49 +154,193 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-hello-world" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2017" class="archive-year">2017</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2017/10/17/hello-world/" class="archive-article-date">
-  	<time datetime="2017-10-17T05:20:09.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-10-17</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/10/17/hello-world/">Hello HEXO</a>
+    <h1 class="article-title" itemprop="name">
+      生成环境和开发环境
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
-          
+        
+        <a href="/2016/09/20/hello-world/" class="archive-article-date">
+  	<time datetime="2016-09-19T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-09-20</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p><strong>注意：</strong><br>一定要区分开开发环境和生产环境，不可将devtool组件用于线上生产环境，所以代码打包的时候就要作区分</p>
+</blockquote>
+<p><strong>涉及到的知识点</strong></p>
+<ul>
+<li>npm scripts</li>
+<li>process.env.NODE_ENV 环境变量</li>
+<li><p>cross-env package</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">package.json</div><div class="line"></div><div class="line">&quot;scripts&quot;: &#123;</div><div class="line">    &quot;start&quot;: &quot;cross-env NODE_ENV=development node build/dev.js&quot;,</div><div class="line">    &quot;build&quot;: &quot;cross-env NODE_ENV=production node build/prod.js&quot;</div><div class="line">  &#125;,</div></pre></td></tr></table></figure>
+</li>
+<li><p>webpack.DefinePlugin 插件定义全局变量</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">plugins: [</div><div class="line">    new webpack.DefinePlugin(&#123;</div><div class="line">      &apos;process.env&apos;: &#123; // 这是给 React / Redux 打包用的</div><div class="line">        NODE_ENV: JSON.stringify(&apos;production&apos;)</div><div class="line">      &#125;,</div><div class="line">      // ================================</div><div class="line">      // 配置开发全局常量</div><div class="line">      // ================================</div><div class="line">      __DEV__: env === &apos;development&apos;,</div><div class="line">      __PROD__: env === &apos;production&apos;,</div><div class="line">      __COMPONENT_DEVTOOLS__: false, // 是否使用组件形式的 Redux DevTools</div><div class="line">      __WHY_DID_YOU_UPDATE__: false // 是否检测不必要的组件重渲染</div><div class="line">    &#125;)</div><div class="line">  ]</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><strong>代码中使用：</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">// devtool 区分开发环境和生产环境</div><div class="line">let node = null;</div><div class="line">if (__DEV__) &#123; // 生活</div><div class="line">    node = (</div><div class="line">        &lt;div&gt;</div><div class="line">            &lt;DevTools/&gt;</div><div class="line">            &lt;CounterApp /&gt;</div><div class="line">        &lt;/div&gt;</div><div class="line">    )</div><div class="line">&#125;</div><div class="line"></div><div class="line">if (__PROD__) &#123;</div><div class="line">    node = &lt;CounterApp /&gt;</div><div class="line">&#125;</div><div class="line"></div><div class="line">render(</div><div class="line">    &lt;Provider store=&#123;store&#125;&gt;</div><div class="line">        &#123;node&#125;</div><div class="line">    &lt;/Provider&gt;,</div><div class="line">  document.getElementById(&apos;app&apos;)</div><div class="line">);</div></pre></td></tr></table></figure></p>
 
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">js</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">development 环境</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">production 环境</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
+        </div>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2016/09/20/hello-world/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
+  
+    <a href="/2016/10/01/redux middleware详解/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          redux middleware详解
+        
+      </div>
+    </a>
   
   
-    </div></section>
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+  
+  
   
 
-    
+  
+
+  
+
+  
 
 
           </div>
@@ -214,8 +363,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,
@@ -313,6 +462,14 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">纯函数</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">development 环境</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">production 环境</a>
               </li>
             
             <div class="clearfix"></div>
