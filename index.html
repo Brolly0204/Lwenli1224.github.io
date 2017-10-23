@@ -349,19 +349,10 @@
         <blockquote>
 <p><strong>注意：</strong><br>一定要区分开开发环境和生产环境，不可将devtool组件用于线上生产环境，所以代码打包的时候就要作区分</p>
 </blockquote>
-<p><strong>涉及到的知识点</strong></p>
-<ul>
-<li>npm scripts</li>
-<li>process.env.NODE_ENV 环境变量</li>
-<li><p>cross-env package</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">package.json</div><div class="line"></div><div class="line">&quot;scripts&quot;: &#123;</div><div class="line">    &quot;start&quot;: &quot;cross-env NODE_ENV=development node build/dev.js&quot;,</div><div class="line">    &quot;build&quot;: &quot;cross-env NODE_ENV=production node build/prod.js&quot;</div><div class="line">  &#125;,</div></pre></td></tr></table></figure>
-</li>
-<li><p>webpack.DefinePlugin 插件定义全局变量</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">plugins: [</div><div class="line">    new webpack.DefinePlugin(&#123;</div><div class="line">      &apos;process.env&apos;: &#123; // 这是给 React / Redux 打包用的</div><div class="line">        NODE_ENV: JSON.stringify(&apos;production&apos;)</div><div class="line">      &#125;,</div><div class="line">      // ================================</div><div class="line">      // 配置开发全局常量</div><div class="line">      // ================================</div><div class="line">      __DEV__: env === &apos;development&apos;,</div><div class="line">      __PROD__: env === &apos;production&apos;,</div><div class="line">      __COMPONENT_DEVTOOLS__: false, // 是否使用组件形式的 Redux DevTools</div><div class="line">      __WHY_DID_YOU_UPDATE__: false // 是否检测不必要的组件重渲染</div><div class="line">    &#125;)</div><div class="line">  ]</div></pre></td></tr></table></figure>
-</li>
-</ul>
-<p><strong>代码中使用：</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">// devtool 区分开发环境和生产环境</div><div class="line">let node = null;</div><div class="line">if (__DEV__) &#123; // 生活</div><div class="line">    node = (</div><div class="line">        &lt;div&gt;</div><div class="line">            &lt;DevTools/&gt;</div><div class="line">            &lt;CounterApp /&gt;</div><div class="line">        &lt;/div&gt;</div><div class="line">    )</div><div class="line">&#125;</div><div class="line"></div><div class="line">if (__PROD__) &#123;</div><div class="line">    node = &lt;CounterApp /&gt;</div><div class="line">&#125;</div><div class="line"></div><div class="line">render(</div><div class="line">    &lt;Provider store=&#123;store&#125;&gt;</div><div class="line">        &#123;node&#125;</div><div class="line">    &lt;/Provider&gt;,</div><div class="line">  document.getElementById(&apos;app&apos;)</div><div class="line">);</div></pre></td></tr></table></figure></p>
-
+<p><br><br>
+        
+          <a class="article-more-a" href="/2016/09/20/hello-world/#more">more >></a>
+        
       
 
       
