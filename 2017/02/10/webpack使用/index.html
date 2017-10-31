@@ -8,17 +8,19 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>webpack3.x使用 | Lwenli_blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="什么是webpack?   webpack 是一个现代 JavaScript 应用程序的模块打包器(module bundler)。它的主要目标是将 JavaScript 文件打包在一起,打包后的文件用于在浏览器中使用。">
+  <meta name="description" content="1.什么是webpack?   webpack 是一个现代 JavaScript 应用程序的模块打包器(module bundler)，它的主要目标是将JavaScript 文件打包在一起，打包后的文件用于在浏览器中使用。">
 <meta name="keywords" content="webpack3.x,模块打包器">
 <meta property="og:type" content="article">
 <meta property="og:title" content="webpack3.x使用">
 <meta property="og:url" content="http://yoursite.com/2017/02/10/webpack使用/index.html">
 <meta property="og:site_name" content="Lwenli_blog">
-<meta property="og:description" content="什么是webpack?   webpack 是一个现代 JavaScript 应用程序的模块打包器(module bundler)。它的主要目标是将 JavaScript 文件打包在一起,打包后的文件用于在浏览器中使用。">
-<meta property="og:updated_time" content="2017-10-31T13:03:27.000Z">
+<meta property="og:description" content="1.什么是webpack?   webpack 是一个现代 JavaScript 应用程序的模块打包器(module bundler)，它的主要目标是将JavaScript 文件打包在一起，打包后的文件用于在浏览器中使用。">
+<meta property="og:image" content="http://yoursite.com/images/webpack/mainjs1.png">
+<meta property="og:updated_time" content="2017-10-31T14:50:54.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="webpack3.x使用">
-<meta name="twitter:description" content="什么是webpack?   webpack 是一个现代 JavaScript 应用程序的模块打包器(module bundler)。它的主要目标是将 JavaScript 文件打包在一起,打包后的文件用于在浏览器中使用。">
+<meta name="twitter:description" content="1.什么是webpack?   webpack 是一个现代 JavaScript 应用程序的模块打包器(module bundler)，它的主要目标是将JavaScript 文件打包在一起，打包后的文件用于在浏览器中使用。">
+<meta name="twitter:image" content="http://yoursite.com/images/webpack/mainjs1.png">
   
     <link rel="alternative" href="/atom.xml" title="Lwenli_blog" type="application/atom+xml">
   
@@ -174,21 +176,36 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="什么是webpack"><a href="#什么是webpack" class="headerlink" title="什么是webpack?"></a>什么是webpack?</h2><blockquote>
-<p>  webpack 是一个现代 JavaScript 应用程序的模块打包器(module bundler)。它的主要目标是将 JavaScript 文件打包在一起,打包后的文件用于在浏览器中使用。</p>
+        <h2 id="1-什么是webpack"><a href="#1-什么是webpack" class="headerlink" title="1.什么是webpack?"></a>1.什么是webpack?</h2><blockquote>
+<p>  webpack 是一个现代 JavaScript 应用程序的模块打包器(module bundler)，它的主要目标是将JavaScript 文件打包在一起，打包后的文件用于在浏览器中使用。</p>
 </blockquote>
 <a id="more"></a>
-<h2 id="什么是webpack-dev-server"><a href="#什么是webpack-dev-server" class="headerlink" title="什么是webpack-dev-server?"></a>什么是webpack-dev-server?</h2><blockquote>
-<p>  webpack-dev-server是一个小型的node.js Express服务器,它使用webpack-dev-middleware中间件来为通过webpack打包生成的资源文件提供Web服务。它还有一个通过Socket.IO连接着webpack-dev-server服务器的小型运行时程序。webpack-dev-server发送关于编译状态的消息到客户端，客户端根据消息作出响应。</p>
+<h2 id="2-什么是webpack-dev-server"><a href="#2-什么是webpack-dev-server" class="headerlink" title="2.什么是webpack-dev-server?"></a>2.什么是webpack-dev-server?</h2><blockquote>
+<p>  webpack-dev-server是一个小型的node.js Express服务器，它使用webpack-dev-middleware中间件来为通过webpack打包生成的资源文件提供Web服务；它还有一个通过Socket.IO连接着webpack-dev-server服务器的小型运行时程序。webpack-dev-server发送关于编译状态的消息到客户端，客户端根据消息作出响应。</p>
 </blockquote>
-<h2 id="Install-安装"><a href="#Install-安装" class="headerlink" title="Install 安装"></a>Install 安装</h2><p>1.首先最好全局安装下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm i -g webpack webpack-dev-server</div></pre></td></tr></table></figure></p>
-<ol>
-<li>本地安装(通过终端命令安装)<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">mkdir webpack_demo &amp;&amp; cd webpack_demo // 创建并切换到项目目录</div><div class="line">npm init -y // 初始化生产一个package.json 文件</div></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>开始安装</p>
-<pre><code>npm i webpack webpack-dev-server -S
-</code></pre>
+<h2 id="3-Install-安装"><a href="#3-Install-安装" class="headerlink" title="3.Install 安装"></a>3.Install 安装</h2><p>1.首先最好全局安装下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm i -g webpack webpack-dev-server</div></pre></td></tr></table></figure></p>
+<p>2.本地安装(通过终端命令安装)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">mkdir webpack_demo &amp;&amp; cd webpack_demo // 创建并切换到项目目录</div><div class="line">npm init -y // 初始化生产一个package.json 文件</div><div class="line">npm i webpack webpack-dev-server -D // 本地安装</div></pre></td></tr></table></figure></p>
+<p>4.项目根目录下创建配置文件</p>
+<blockquote>
+<p>本地运行webpack时 默认查找webpack.config.js</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">touch webpack.config.js</div></pre></td></tr></table></figure>
+<p>5.指定配置文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">webpack --config webpack.config.prod.js</div><div class="line">webpack --config webpack.config.dev.js</div></pre></td></tr></table></figure></p>
+<p>6.src目录下创建入口文件main.js<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">cd webpack_demo // 项目目录</div><div class="line">mkdir src &amp;&amp; cd src // 源码目录 </div><div class="line">touch main.js // 入口文件</div></pre></td></tr></table></figure></p>
+<p>main.js<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">const add = (a, b) =&gt; a * b; // es6箭头函数 稍后通过配置babel将es6编译成es5语法</div><div class="line">let count = add(10, 2);</div><div class="line">console.log(count);</div></pre></td></tr></table></figure></p>
+<h2 id="4-配置webpack-config-js"><a href="#4-配置webpack-config-js" class="headerlink" title="4.配置webpack.config.js"></a>4.配置webpack.config.js</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">module.exports = &#123;  // webpack配置项 entry output module plugins 等配置</div><div class="line">  entry: &apos;./src/main.js&apos;, // 指定入口文件 entry：[String|Array|Object]</div><div class="line">    output: &#123; // 输出配置</div><div class="line">      path: path.join(__dirname, &apos;./dist&apos;), // 指定编译文件输出路径 通常是当前dist目录下（注：必须是绝对路径）</div><div class="line">      filename: &apos;[name].js&apos;, // 编译文件输出后的文件名 自动分配（）, 也可以固定写法（比如：filename: &apos;bundle.js&apos;）</div><div class="line">      publicPath: &apos;/&apos; // 指定资源文件引用的目录 如 publicPath: &apos;/dist&apos;   src=&apos;/dist/main.js&apos;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="5-在package-json的scripts字段中配置运行脚本"><a href="#5-在package-json的scripts字段中配置运行脚本" class="headerlink" title="5.在package.json的scripts字段中配置运行脚本"></a>5.在package.json的scripts字段中配置运行脚本</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">  &quot;name&quot;: &quot;webpack_demo&quot;,</div><div class="line">  &quot;version&quot;: &quot;1.0.0&quot;,</div><div class="line">  &quot;main&quot;: &quot;index.js&quot;,</div><div class="line">  &quot;license&quot;: &quot;MIT&quot;,</div><div class="line">  &quot;scripts&quot;: &#123;</div><div class="line">    &quot;build&quot;: &quot;webpack --progress --colors&quot;,</div><div class="line">    &quot;dev&quot;: &quot;webpack-dev-server --progress --colors --inline --hot&quot;,</div><div class="line">    &quot;start&quot;: &quot;npm run dev&quot;</div><div class="line">  &#125;,</div><div class="line">  &quot;devDependencies&quot;: &#123;</div><div class="line">    &quot;webpack&quot;: &quot;^3.8.1&quot;,</div><div class="line">    &quot;webpack-dev-server&quot;: &quot;^2.9.3&quot;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>当前目录下 打开终端 运行以下脚本 指定开发/生产阶段</p>
+<ul>
+<li>yarn build / npm run build 生产阶段</li>
+<li>yarn dev / npm run dev 开发阶段</li>
+<li>yarn start / npm start 开发阶段</li>
+</ul>
+<blockquote>
+<p>此时运行 yarn build 你会发现在项目根目录下多出个dist目录，此时dist里面的main.js正是编译后的js文件</p>
+</blockquote>
+<div align="center"><br>  <img src="/images/webpack/mainjs1.png" width="20%"><br></div>
+
       
 
       
