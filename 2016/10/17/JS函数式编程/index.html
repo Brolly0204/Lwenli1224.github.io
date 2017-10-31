@@ -8,17 +8,17 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>JS函数式编程 | Lwenli_blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="第一章：一等公民的函数 我们实际上说的是它们和其他对象都一样…所以就是普通公民，函数真没什么特殊的，你可以像对待任何其他数据类型一样对待它们——把它们存在数组里，当作参数传递，赋值给变量…等等。">
+  <meta name="description" content="第一章 一等公民的函数 我们实际上说的是它们和其他对象都一样…所以就是普通公民，函数真没什么特殊的，你可以像对待任何其他数据类型一样对待它们——把它们存在数组里，当作参数传递，赋值给变量…等等。">
 <meta name="keywords" content="js,一等公民的函数,纯函数">
 <meta property="og:type" content="article">
 <meta property="og:title" content="JS函数式编程">
 <meta property="og:url" content="http://yoursite.com/2016/10/17/JS函数式编程/index.html">
 <meta property="og:site_name" content="Lwenli_blog">
-<meta property="og:description" content="第一章：一等公民的函数 我们实际上说的是它们和其他对象都一样…所以就是普通公民，函数真没什么特殊的，你可以像对待任何其他数据类型一样对待它们——把它们存在数组里，当作参数传递，赋值给变量…等等。">
-<meta property="og:updated_time" content="2017-10-23T04:31:23.000Z">
+<meta property="og:description" content="第一章 一等公民的函数 我们实际上说的是它们和其他对象都一样…所以就是普通公民，函数真没什么特殊的，你可以像对待任何其他数据类型一样对待它们——把它们存在数组里，当作参数传递，赋值给变量…等等。">
+<meta property="og:updated_time" content="2017-10-31T05:57:01.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="JS函数式编程">
-<meta name="twitter:description" content="第一章：一等公民的函数 我们实际上说的是它们和其他对象都一样…所以就是普通公民，函数真没什么特殊的，你可以像对待任何其他数据类型一样对待它们——把它们存在数组里，当作参数传递，赋值给变量…等等。">
+<meta name="twitter:description" content="第一章 一等公民的函数 我们实际上说的是它们和其他对象都一样…所以就是普通公民，函数真没什么特殊的，你可以像对待任何其他数据类型一样对待它们——把它们存在数组里，当作参数传递，赋值给变量…等等。">
   
     <link rel="alternative" href="/atom.xml" title="Lwenli_blog" type="application/atom+xml">
   
@@ -174,15 +174,38 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="第一章：一等公民的函数"><a href="#第一章：一等公民的函数" class="headerlink" title="第一章：一等公民的函数"></a>第一章：一等公民的函数</h3><blockquote>
+        <h3 id="第一章-一等公民的函数"><a href="#第一章-一等公民的函数" class="headerlink" title="第一章 一等公民的函数"></a>第一章 一等公民的函数</h3><blockquote>
 <p>我们实际上说的是它们和其他对象都一样…所以就是普通公民，函数真没什么特殊的，你可以像对待任何其他数据类型一样对待它们——把它们存在数组里，当作参数传递，赋值给变量…等等。</p>
 </blockquote>
 <p><br><br><a id="more"></a></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">// 太傻了</div><div class="line">var getServerStuff = function(callback)&#123;</div><div class="line">  return ajaxCall(function(json)&#123;</div><div class="line">    return callback(json);</div><div class="line">  &#125;);</div><div class="line">&#125;;</div><div class="line"></div><div class="line">// 那么，重构下 getServerStuff</div><div class="line">var getServerStuff = function(callback)&#123;</div><div class="line">  return ajaxCall(callback);</div><div class="line">&#125;;</div><div class="line"></div><div class="line">// ...就等于</div><div class="line">var getServerStuff = ajaxCall; // &lt;-- 看，没有括号哦</div></pre></td></tr></table></figure>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">httpGet(&apos;/post/2&apos;, function(json, err)&#123;</div><div class="line">  return renderPost(json, err);</div><div class="line">&#125;);</div><div class="line"></div><div class="line">// 写成一等公民函数的形式，要做的改动将会少得多：</div><div class="line">httpGet(&apos;/post/2&apos;, renderPost);</div></pre></td></tr></table></figure>
-<h3 id="第二章：纯函数的好处"><a href="#第二章：纯函数的好处" class="headerlink" title="第二章：纯函数的好处"></a>第二章：纯函数的好处</h3><blockquote>
-<p>纯函数就是一种函数，即相同的输入，永远会得到相同的输出，而且没有任何可观察的副作用</p>
+<h3 id="第二章-纯函数"><a href="#第二章-纯函数" class="headerlink" title="第二章 纯函数"></a>第二章 纯函数</h3><blockquote>
+<p>纯函数就是一种函数，即相同的输入，永远会得到相同的输出，而且没有任何可观察的副作用，也不依赖外部环境的状态</p>
 </blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">var xs = [1,2,3,4,5];</div><div class="line"></div><div class="line">// Array.slice是纯函数 对于固定的输入 输出总是固定的</div><div class="line">xs.slice(0,3);</div><div class="line">//=&gt; [1,2,3]</div><div class="line"></div><div class="line">xs.slice(0,3);</div><div class="line">//=&gt; [1,2,3]</div><div class="line"></div><div class="line">xs.slice(0,3);</div><div class="line">//=&gt; [1,2,3]</div><div class="line"></div><div class="line"></div><div class="line">// Array.splice不是纯函数 有副作用 对于固定的输入 输出不是固定的</div><div class="line">xs.splice(0,3);</div><div class="line">//=&gt; [1,2,3]</div><div class="line"></div><div class="line">xs.splice(0,3);</div><div class="line">//=&gt; [4,5]</div><div class="line"></div><div class="line">xs.splice(0,3);</div><div class="line">//=&gt; []</div></pre></td></tr></table></figure>
+<h4 id="副作用"><a href="#副作用" class="headerlink" title="副作用"></a>副作用</h4><blockquote>
+<p>副作用是在计算结果的过程中，系统状态的一种变化，或者与外部世界进行的可观察的交互。</p>
+</blockquote>
+<p>副作用包含：</p>
+<ul>
+<li>更改文件系统</li>
+<li>往数据库插入记录</li>
+<li>发送一个 http 请求</li>
+<li>可变数据</li>
+<li>打印/log</li>
+<li>获取用户输入</li>
+<li>DOM 查询</li>
+<li>访问系统状态</li>
+</ul>
+<h3 id="第三章-函数的柯理化"><a href="#第三章-函数的柯理化" class="headerlink" title="第三章 函数的柯理化"></a>第三章 函数的柯理化</h3><blockquote>
+<p>函数柯里化（curry）的定义很简单：传递给函数一部分参数来调用它，让它返回一个函数去处理剩下的参数。</p>
+</blockquote>
+<p>1.对于加法函数 var add = (x, y) =&gt;　x + y ，我们可以这样进行柯里化：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">//比较容易读懂的ES5写法</div><div class="line">var add = function(x)&#123;</div><div class="line">    return function(y)&#123;</div><div class="line">        return x + y</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">//ES6写法，也是比较正统的函数式写法</div><div class="line">var add = x =&gt; (y =&gt; x + y);</div><div class="line"></div><div class="line">//试试看</div><div class="line">var add2 = add(2);</div><div class="line">var add200 = add(200);</div><div class="line"></div><div class="line">add2(5); // =&gt;7</div><div class="line">add200(50); // =&gt;250</div></pre></td></tr></table></figure></p>
+<p><strong><em>事实上柯里化是一种“预加载”函数的方法，通过传递较少的参数，得到一个已经记住了这些参数的新函数，某种意义上讲，这是一种对参数的“缓存”，是一种非常高效的编写函数的方法</em></strong></p>
+<h3 id="第四章-函数组合"><a href="#第四章-函数组合" class="headerlink" title="第四章 函数组合"></a>第四章 函数组合</h3><p>学会了使用纯函数以及如何把它柯里化之后，我们会很容易写出这样的“包菜式”代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">h(g(f(x)));</div></pre></td></tr></table></figure></p>
+<p>为了解决函数嵌套的问题，我们需要用到“函数组合”：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">//两个函数的组合</div><div class="line">var compose = function(f, g) &#123;</div><div class="line">    return function(x) &#123;</div><div class="line">        return f(g(x));</div><div class="line">    &#125;;</div><div class="line">&#125;;</div><div class="line"></div><div class="line">//或者</div><div class="line">var compose = (f, g) =&gt; (x =&gt; f(g(x)));</div><div class="line"></div><div class="line">var add1 = x =&gt; x + 1;</div><div class="line">var mul5 = x =&gt; x * 5;</div><div class="line"></div><div class="line">compose(mul5, add1)(2);</div><div class="line">// =&gt;15</div></pre></td></tr></table></figure></p>
+<p>组合串联多个<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">function compose(...funcs) &#123;</div><div class="line">    return arg =&gt; funcs.reduceRight((composed, f) =&gt; f(composed), arg);</div><div class="line">&#125;</div><div class="line">compose(f1, f2, f3)(x) </div><div class="line">等价于</div><div class="line">(x) =&gt; f1(f2(f3(x)))</div></pre></td></tr></table></figure></p>
 <h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a href="https://llh911001.gitbooks.io/mostly-adequate-guide-chinese/content/" target="_blank" rel="external">JS 函数式编程指南详解</a></p>
 
       
