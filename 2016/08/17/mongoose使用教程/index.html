@@ -6,14 +6,19 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Tag: js | Lwenli_blog</title>
+  <title>Mongoose使用教程 | Lwenli_blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Lwenli_blog">
-<meta property="og:url" content="http://yoursite.com/tags/js/index.html">
+  <meta name="description" content="Mongoose是什么？ Mongoose是MongoDB的一个对象模型工具对node环境中MongoDB数据库操作的封装，封装了MongoDB对文档的的一些增删改查等常用方法，让NodeJS操作Mongodb数据库变得更加灵活简单">
+<meta name="keywords" content="mongoose,Schema,Model">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Mongoose使用教程">
+<meta property="og:url" content="http://yoursite.com/2016/08/17/mongoose使用教程/index.html">
 <meta property="og:site_name" content="Lwenli_blog">
+<meta property="og:description" content="Mongoose是什么？ Mongoose是MongoDB的一个对象模型工具对node环境中MongoDB数据库操作的封装，封装了MongoDB对文档的的一些增删改查等常用方法，让NodeJS操作Mongodb数据库变得更加灵活简单">
+<meta property="og:updated_time" content="2017-10-31T10:11:27.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Lwenli_blog">
+<meta name="twitter:title" content="Mongoose使用教程">
+<meta name="twitter:description" content="Mongoose是什么？ Mongoose是MongoDB的一个对象模型工具对node环境中MongoDB数据库操作的封装，封装了MongoDB对文档的的一些增删改查等常用方法，让NodeJS操作Mongodb数据库变得更加灵活简单">
   
     <link rel="alternative" href="/atom.xml" title="Lwenli_blog" type="application/atom+xml">
   
@@ -149,164 +154,204 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-mongoose使用教程" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Mongoose使用教程
+    </h1>
+  
+
+        
+        <a href="/2016/08/17/mongoose使用教程/" class="archive-article-date">
+  	<time datetime="2016-08-17T04:46:25.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-08-17</time>
+</a>
+        
+      </header>
     
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="Mongoose是什么？"><a href="#Mongoose是什么？" class="headerlink" title="Mongoose是什么？"></a>Mongoose是什么？</h2><blockquote>
+<p>Mongoose是MongoDB的一个对象模型工具对node环境中MongoDB数据库操作的封装，封装了MongoDB对文档的的一些增删改查等常用方法，让NodeJS操作Mongodb数据库变得更加灵活简单</p>
+</blockquote>
+<a id="more"></a>
+<h2 id="Install-mongoose"><a href="#Install-mongoose" class="headerlink" title="Install mongoose"></a>Install mongoose</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm i mongoose --save</div></pre></td></tr></table></figure>
+<h2 id="连接mongodb"><a href="#连接mongodb" class="headerlink" title="连接mongodb"></a>连接mongodb</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">db.js</div><div class="line">// 1.导入mongoose模块</div><div class="line">const mongoose = require(&apos;mongoose&apos;); </div><div class="line"></div><div class="line">// 2.连接数据库 mongoose.connect(&quot;mongodb://localhost:端口号/数据库名称&quot;);</div><div class="line">mongoose.connect(&apos;mongodb://127.0.0.1:27017/user&apos;);</div><div class="line"></div><div class="line">// 3.监听连接成功回调</div><div class="line">mongoose.connection.on(&apos;connected&apos;, function() &#123; </div><div class="line">  console.log(&apos;mongo connect success!&apos;);</div><div class="line">&#125;);</div><div class="line"></div><div class="line">// 定义Schema </div><div class="line">// Schema是数据库集合的模型骨架定义了集合中的字段的名称和类型以及默认值等信息</div><div class="line">const UserSchema = new mongoose.Schema(&#123;</div><div class="line">  name: &#123;type: &apos;String&apos;, required: true&#125;, // name: &apos;String&apos;</div><div class="line">  tel: &#123;type: &apos;Number&apos;, required: true&#125; // tel: &apos;Number&apos;</div><div class="line">&#125;);</div><div class="line"></div><div class="line">// 创建Model并导出, model名称会被转换成小写复数 比如 User =&gt; users</div><div class="line">module.exports = mongoose.model(&apos;User&apos;, UserSchema);</div></pre></td></tr></table></figure>
+<h2 id="使用Model提供API操作数据库-index-js"><a href="#使用Model提供API操作数据库-index-js" class="headerlink" title="使用Model提供API操作数据库 index.js"></a>使用Model提供API操作数据库 index.js</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">const UserModel = require(&apos;./db&apos;);</div></pre></td></tr></table></figure>
+<h3 id="1-新增数据"><a href="#1-新增数据" class="headerlink" title="1.新增数据"></a>1.新增数据</h3><p>语法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Model.create(文档数据, callback))</div></pre></td></tr></table></figure></p>
+<p>代码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">UserModel.create(&#123;name: &apos;React&apos;, tel: 15311199666&#125;, function(err) &#123;</div><div class="line">    if (!err) &#123;</div><div class="line">      console.log(doc);</div><div class="line">    &#125; else &#123;</div><div class="line">      console.log(err);</div><div class="line">    &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure></p>
+<h3 id="2-批量增加"><a href="#2-批量增加" class="headerlink" title="2.批量增加"></a>2.批量增加</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">UserModel.create([</div><div class="line">  &#123;name: &apos;React&apos;, tel: 222222&#125;,</div><div class="line">  &#123;name: &apos;Node&apos;, tel: 333333&#125;,</div><div class="line">  &#123;name: &apos;Redux&apos;, tel: 444444&#125;,</div><div class="line">  &#123;name: &apos;React Native&apos;, tel: 555555&#125;,</div><div class="line">], function(err, doc) &#123;</div><div class="line">  if (!err) &#123;</div><div class="line">    console.log(doc);</div><div class="line">  &#125; else &#123;</div><div class="line">    console.log(err);</div><div class="line">  &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<h3 id="3-查询数据"><a href="#3-查询数据" class="headerlink" title="3.查询数据"></a>3.查询数据</h3><p>语法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">Model.find(查询条件, callback);</div><div class="line">Model.find(&#123;&#125;,function(error,docs)&#123;</div><div class="line">  若没有向find传递参数，默认的是显示所有文档</div><div class="line">&#125;);</div></pre></td></tr></table></figure></p>
+<p>代码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">UserModel.find(&#123; name: &apos;Vue&apos; &#125;, function(err, docs) &#123;</div><div class="line">    if (!err) &#123;</div><div class="line">      console.log(docs);</div><div class="line">    &#125; else &#123;</div><div class="line">      console.log(err);</div><div class="line">    &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure></p>
+<h3 id="4-findOne-查询单条数据"><a href="#4-findOne-查询单条数据" class="headerlink" title="4.findOne (查询单条数据)"></a>4.findOne (查询单条数据)</h3><p><strong><em>当查询到即一个符合条件的数据时，将停止继续查询，并返回查询结果</em></strong><br>语法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">findeOne(查询条件，callback);</div></pre></td></tr></table></figure></p>
+<p>代码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">UserModel.findOne(&#123;name: &apos;Vue&apos;&#125;, function(err, doc) &#123;</div><div class="line">  if (!err) &#123;</div><div class="line">    console.log(doc);</div><div class="line">  &#125; else &#123;</div><div class="line">    console.log(err);</div><div class="line">  &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure></p>
+<h3 id="5-findById-按ID查询单条"><a href="#5-findById-按ID查询单条" class="headerlink" title="5.findById (按ID查询单条)"></a>5.findById (按ID查询单条)</h3><p><strong><em>只接收文档的_id作为参数，返回单个文档</em></strong><br>语法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">findById(_id, callback);</div></pre></td></tr></table></figure></p>
+<p>代码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">const _id = &apos;59f83ad71e13326a143a129c&apos;;</div><div class="line">UserModel.findById(_id, function(err, doc) &#123;</div><div class="line">  if (!err) &#123;</div><div class="line">    console.log(doc);</div><div class="line">  &#125; else &#123;</div><div class="line">    console.log(err);</div><div class="line">  &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure></p>
+<h3 id="6-更新数据"><a href="#6-更新数据" class="headerlink" title="6.更新数据"></a>6.更新数据</h3><p>语法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Model.update(查询条件,更新对象,callback);</div></pre></td></tr></table></figure></p>
+<p>代码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">UserModel.update(&#123; name: &apos;React&apos; &#125;, &#123;$set: &#123;name: &apos;Vue&apos;&#125;&#125;, function(err, doc) &#123;</div><div class="line">  if (!err) &#123;</div><div class="line">    console.log(doc);</div><div class="line">  &#125; else &#123;</div><div class="line">    console.log(err);</div><div class="line">  &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure></p>
+<h3 id="7-删除数据"><a href="#7-删除数据" class="headerlink" title="7.删除数据"></a>7.删除数据</h3><p> 语法<br> <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Model.remove(查询条件, callback);</div></pre></td></tr></table></figure></p>
+<p> 代码<br> <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">UserModel.remove(&#123;name: &apos;React&apos;&#125;, function(err, doc) &#123;</div><div class="line">  if (!err) &#123;</div><div class="line">    console.log(doc.result);</div><div class="line">  &#125; else &#123;</div><div class="line">    console.log(err);</div><div class="line">  &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure></p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p> <a href="http://mongoosejs.com/docs/guide.html" target="_blank" rel="external">Mongoose 官网</a><br> <a href="http://www.zhufengpeixun.cn/docs/html/%E6%95%B0%E6%8D%AE%E5%BA%93/mongoose.html" target="_blank" rel="external">Mongoose 使用</a></p>
+
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    </div>
+    <div class="article-info article-info-index">
       
       
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2016" class="archive-year">2016</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2016/10/17/JS函数式编程/" class="archive-article-date">
-  	<time datetime="2016-10-17T06:46:25.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-10-17</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2016/10/17/JS函数式编程/">JS函数式编程</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">js</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">mongoose</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">一等公民的函数</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Schema</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">纯函数</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Model</a>
         		</li>
       		
 		</ul>
 	</div>
 
-          
+      
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2016/08/17/mongoose使用教程/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2016/10/01/redux middleware详解/" class="archive-article-date">
-  	<time datetime="2016-10-01T06:56:25.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-10-01</time>
-</a>
+<nav id="article-nav">
+  
+    <a href="/2016/08/17/MongoDB安装/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          MongoDB安装(mac)
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2016/07/10/express+multer图片上传/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">express+multer 图片上传</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
+        
+        
+    </div>
+</aside>
+
+
+
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2016/10/01/redux middleware详解/">redux middleware详解</a>
-    </h1>
+  
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">js</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">redux-logger</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">redux-thunk</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">redux-promise</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2016/09/20/hello-world/" class="archive-article-date">
-  	<time datetime="2016-09-19T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-09-20</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2016/09/20/hello-world/">生成环境和开发环境</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">js</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">development 环境</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">production 环境</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
   
 
-    
+  
 
 
           </div>
@@ -329,9 +374,9 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
+		isPost: true,
 		isArchive: false,
-		isTag: true,
+		isTag: false,
 		isCategory: false,
 		open_in_new: false,
 		toc_hide_index: true,
