@@ -6,14 +6,22 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Tag: webpack3.x | Lwenli_blog</title>
+  <title>canvas-动态圆形进度条 | Lwenli_blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Lwenli_blog">
-<meta property="og:url" content="http://yoursite.com/tags/webpack3-x/index.html">
+  <meta name="description" content="1.弧度和角度换算">
+<meta name="keywords" content="canvas,reqAnimationFrame">
+<meta property="og:type" content="article">
+<meta property="og:title" content="canvas-动态圆形进度条">
+<meta property="og:url" content="http://yoursite.com/2017/04/12/canvas-动态圆形进度条/index.html">
 <meta property="og:site_name" content="Lwenli_blog">
+<meta property="og:description" content="1.弧度和角度换算">
+<meta property="og:image" content="http://yoursite.com/images/canvas_arc.jpg">
+<meta property="og:image" content="http://yoursite.com/images/circle_progress.jpg">
+<meta property="og:updated_time" content="2017-11-01T12:57:52.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Lwenli_blog">
+<meta name="twitter:title" content="canvas-动态圆形进度条">
+<meta name="twitter:description" content="1.弧度和角度换算">
+<meta name="twitter:image" content="http://yoursite.com/images/canvas_arc.jpg">
   
     <link rel="alternative" href="/atom.xml" title="Lwenli_blog" type="application/atom+xml">
   
@@ -149,64 +157,183 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-canvas-动态圆形进度条" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2017" class="archive-year">2017</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2017/02/10/webpack使用/" class="archive-article-date">
-  	<time datetime="2017-02-10T04:46:25.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-02-10</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/02/10/webpack使用/">webpack3.x使用 (待更新...)</a>
+    <h1 class="article-title" itemprop="name">
+      canvas-动态圆形进度条
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
+        
+        <a href="/2017/04/12/canvas-动态圆形进度条/" class="archive-article-date">
+  	<time datetime="2017-04-11T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-04-12</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="1-弧度和角度换算"><a href="#1-弧度和角度换算" class="headerlink" title="1.弧度和角度换算"></a>1.弧度和角度换算</h3><div align="center"><br>  <img src="/images/canvas_arc.jpg" width="40%" height="25%"><br></div><br><a id="more"></a><br><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line"> * degrees = radians * 180/Math.PI</div><div class="line"> * 角度等于弧度乘于180再除于PI</div><div class="line"> *</div><div class="line"> * radians = degrees * Math.PI/180</div><div class="line"> * 弧度等于角度度乘于PI再除于180</div><div class="line"> *</div><div class="line"> */</div></pre></td></tr></table></figure><br><br>### 2.绘制圆形API<br><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line"> * 利用context方法，进行圆和弧的绘制</div><div class="line"> * context.arc(x, y, radius, startAngle, endAngle, anticlockwise);</div><div class="line"> * x 圆的中心的 x 坐标。</div><div class="line"> * y 圆的中心的 y 坐标。</div><div class="line"> * r 圆的半径</div><div class="line"> * startingAngle 起始角，以弧度计。（弧的圆形的三点钟位置是 0 度）。</div><div class="line"> * endAngle 结束角，以弧度计。</div><div class="line"> * anticlockwise 可选。规定应该逆时针还是顺时针绘图。False = 顺时针，true =           逆时针。</div><div class="line"> *</div><div class="line"> */</div></pre></td></tr></table></figure><br><br>### 3.动态圆环进度条<br><br><div align="center"><br>  <img src="/images/circle_progress.jpg" width="40%" height="25%"><br></div>
+
+<p>css<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">* &#123;</div><div class="line">      padding: 0;</div><div class="line">      margin: 0;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  .circle &#123;</div><div class="line">      position: relative;</div><div class="line">      width: 200px;</div><div class="line">      height: 200px;</div><div class="line">      margin: 20em auto;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  .circle canvas &#123;</div><div class="line">      position: absolute;</div><div class="line">      left: 0;</div><div class="line">      top: 0;</div><div class="line">      background: white;</div><div class="line">  &#125;</div><div class="line">  </div><div class="line">  #canvas_1 &#123;</div><div class="line">      z-index: 1;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  #canvas_2 &#123;</div><div class="line">      z-index: 2;</div><div class="line">      background: transparent;</div><div class="line">  &#125;</div></pre></td></tr></table></figure></p>
+<p>html<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&lt;div class=&quot;circle&quot;&gt;</div><div class="line">    &lt;canvas id=&quot;canvas_1&quot; width=&quot;200&quot; height=&quot;200&quot;&gt;&lt;/canvas&gt;</div><div class="line">    &lt;canvas id=&quot;canvas_2&quot; width=&quot;200&quot; height=&quot;200&quot;&gt;&lt;/canvas&gt;</div><div class="line">&lt;/div&gt;</div></pre></td></tr></table></figure></p>
+<p>js<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">先导入 reqAnimationFrame</div><div class="line">&lt;script type=&quot;text/css&quot; src=&quot;reqAnimationFrame.js&quot;&gt;&lt;/script&gt;</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div></pre></td><td class="code"><pre><div class="line">&lt;script type=&quot;text/javascript&quot;&gt;</div><div class="line">    /**</div><div class="line">     * degrees = radians * 180/Math.PI</div><div class="line">     * 角度等于弧度乘于180再除于PI</div><div class="line">     *</div><div class="line">     * radians = degrees * Math.PI/180</div><div class="line">     * 弧度等于角度度乘于PI再除于180</div><div class="line">     */</div><div class="line">   function Circle_Progress(options) &#123;</div><div class="line">       let &#123;percent, outerRace, innerRace&#125; = options;</div><div class="line">       if (!outerRace || !innerRace) &#123;</div><div class="line">           throw new Error(&apos;outerRace or innerRace is not undefined &apos;);</div><div class="line">       &#125;</div><div class="line">       if (percent &lt; 0 || percent &gt; 100) &#123;</div><div class="line">           throw new Error(&apos;percent must be between 0 and 100&apos;);</div><div class="line">       &#125;</div><div class="line">       let c1 = document.querySelector(outerRace); // 轨道圆环</div><div class="line">       let c2 = document.querySelector(innerRace); // 进度圆环</div><div class="line">       // 绘制灰色底部圆环</div><div class="line">       let ctx1 = c1.getContext(&apos;2d&apos;);</div><div class="line">       let ctx2 = c2.getContext(&apos;2d&apos;);</div><div class="line">       ctx1.lineWidth = 10;</div><div class="line">       ctx1.strokeStyle = &apos;#ccc&apos;;</div><div class="line">       ctx1.beginPath();</div><div class="line">       ctx1.arc(c1.width / 2, c1.height / 2, c1.width / 2 - ctx1.lineWidth, 0, 2 * Math.PI, false); // 绘制轨道圆环</div><div class="line">       ctx1.closePath();</div><div class="line">       ctx1.stroke();</div><div class="line"></div><div class="line">       ctx2.lineWidth = 10;</div><div class="line">       ctx2.strokeStyle = &apos;#f90&apos;;</div><div class="line">       let timer = null;</div><div class="line">       let angle = 0;</div><div class="line">       let percentRadian = 0.02 * percent; // 最终弧度</div><div class="line">       let percentAge = 0; // 实施记录百分比</div><div class="line">       let startAngle = -90 * Math.PI / 180; // 起始位置为0点钟方向（1.5π）</div><div class="line">       (function draw() &#123;</div><div class="line">           timer = requestAnimationFrame(draw);</div><div class="line">           ctx2.clearRect(0, 0, c2.width, c2.height);</div><div class="line">           // 百分比圆环</div><div class="line">           ctx2.beginPath();</div><div class="line">           ctx2.arc(c2.width / 2, c2.height / 2, c2.width / 2 - ctx2.lineWidth, startAngle, (percentAge * 3.6 - 90) * Math.PI / 180, false);</div><div class="line">           angle++;</div><div class="line">           percentAge = parseInt(angle / 360 * 100); // 根据角度计算出此时的百分比</div><div class="line">           if (angle / 180 &gt; percentRadian) &#123;</div><div class="line">               window.cancelAnimationFrame(timer);</div><div class="line">           &#125;</div><div class="line">           ctx2.stroke();</div><div class="line">           ctx2.closePath();</div><div class="line">           ctx2.save();</div><div class="line">           ctx2.beginPath();</div><div class="line">           ctx2.font = &apos;30px Arial&apos;;</div><div class="line">           ctx2.fillStyle = &apos;red&apos;;</div><div class="line">           ctx2.textAlign = &apos;center&apos;;</div><div class="line">           ctx2.textBaseline = &quot;middle&quot;;</div><div class="line">           let text = percentAge + &apos;%&apos;;</div><div class="line">           ctx2.fillText(text, c2.width / 2, c2.height / 2);</div><div class="line">           ctx2.closePath();</div><div class="line">           ctx2.restore();</div><div class="line">       &#125;)();</div><div class="line">   &#125;</div><div class="line">   window.onload = function () &#123;</div><div class="line">      new Circle_Progress(&#123;</div><div class="line">          percent: 60,</div><div class="line">          outerRace: &apos;#canvas_1&apos;,</div><div class="line">          innerRace: &apos;#canvas_2&apos;,</div><div class="line">      &#125;)</div><div class="line">   &#125;</div><div class="line">&lt;/script&gt;</div></pre></td></tr></table></figure>
+<h3 id="4-requestAnimationFrame"><a href="#4-requestAnimationFrame" class="headerlink" title="4.requestAnimationFrame"></a>4.requestAnimationFrame</h3><blockquote>
+<p>requestAnimationFrame 是专门为实现高性能的帧动画而设计的一个API<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">说简单点</div><div class="line"></div><div class="line">setInterval、setTimeout是开发者主动要求浏览器去绘制，但是由于种种问题，浏览器可能会漏掉部分命令</div><div class="line">requestAnimationFrame 就是浏览器什么要开始绘制了浏览器自己知道，通过requestAnimationFrame 告诉开发者，这样就不会出现重复绘制丢失的问题了</div><div class="line">目前已在多个浏览器得到了支持，包括IE10+，Firefox，Chrome，Safari，Opera等，在移动设备上，ios6以上版本以及IE mobile 10以上也支持requestAnimationFrame，</div><div class="line"></div><div class="line">唯一比较遗憾的是目前安卓上的原生浏览器并不支持requestAnimationFrame，不过对requestAnimationFrame的支持应该是大势所趋了，安卓版本的chrome 16+也是支持requestAnimationFrame的。</div></pre></td></tr></table></figure></p>
+</blockquote>
+<h3 id="5-reqAnimationFrame-兼容库"><a href="#5-reqAnimationFrame-兼容库" class="headerlink" title="5.reqAnimationFrame 兼容库"></a>5.reqAnimationFrame 兼容库</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div></pre></td><td class="code"><pre><div class="line">window.requestNextAnimationFrame = (function()&#123;</div><div class="line">    var originalWebkitMethod,</div><div class="line">        wrapper = undefined,</div><div class="line">        callback = undefined,</div><div class="line">        geckoVersion = 0,</div><div class="line">        userAgent = navigator.userAgent,</div><div class="line">        index = 0,</div><div class="line">        self = this;</div><div class="line">    if(window.webkitRequestAnimationFrame)&#123;</div><div class="line">        wrapper = function(time)&#123;</div><div class="line">            if(time === undefined)&#123;</div><div class="line">                time += new Date();</div><div class="line">            &#125;</div><div class="line">            self.callback(time);</div><div class="line">        &#125;;</div><div class="line">        originalWebkitMethod = window.webkitRequestAnimationFrame;</div><div class="line">        window.webkitRequestAnimationFrame = function(callback,element)&#123;</div><div class="line">            self.callback = callback;</div><div class="line">            originalWebkitMethod(wrapper , element);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    if(window.mozRequestAnimationFrame)&#123;</div><div class="line">        index = userAgent.indexOf(&apos;rv:&apos;);</div><div class="line">        if(userAgent.indexOf(&apos;Gecko&apos;) != -1)&#123;</div><div class="line">            geckoVersion = userAgent.substr(index+3 , 3);</div><div class="line">            if(geckoVersion === &apos;2.0&apos;)&#123;</div><div class="line">                window.mozRequestAnimationFrame = undefined;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    return window.requestNextAnimationFrame ||</div><div class="line">        window.webkitRequestAnimationFrame ||</div><div class="line">        window.mozRequestAnimationFrame ||</div><div class="line">        window.oRequestAnimationFrame ||</div><div class="line">        window.msRequestAnimationFrame ||</div><div class="line"></div><div class="line"></div><div class="line">        function (callback , element)&#123;</div><div class="line">            var start,</div><div class="line">                finish;</div><div class="line">            window.setTimeout(function()&#123;</div><div class="line">                start = +new Date();</div><div class="line">                callback(start);</div><div class="line">                finish = +new Date();</div><div class="line">                self.timeout = 1000/60 - (finish - start);</div><div class="line">            &#125; , self.timeout);</div><div class="line">        &#125;;</div><div class="line">&#125;)();</div></pre></td></tr></table></figure>
+<h3 id="example"><a href="#example" class="headerlink" title="example"></a>example</h3><p><a href="https://github.com/Lwenli1224/canvas_circle_progress.git" target="_blank" rel="external">https://github.com/Lwenli1224/canvas_circle_progress.git</a></p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p>1.canvas arc 绘制圆形<br>圆环百分比进度条<br><a href="http://www.cnblogs.com/eyeear/p/5278092.html" target="_blank" rel="external">http://www.cnblogs.com/eyeear/p/5278092.html</a><br><a href="http://www.qdfuns.com/notes/14070/0f51b3417c8afd96c10f0c141ae26544.html" target="_blank" rel="external">http://www.qdfuns.com/notes/14070/0f51b3417c8afd96c10f0c141ae26544.html</a><br><a href="http://www.webfront-js.com/articaldetail/133.html" target="_blank" rel="external">http://www.webfront-js.com/articaldetail/133.html</a><br><a href="http://www.cnblogs.com/moqiutao/p/6430079.html" target="_blank" rel="external">http://www.cnblogs.com/moqiutao/p/6430079.html</a><br><a href="http://www.cnblogs.com/eyeear/p/5278092.html" target="_blank" rel="external">http://www.cnblogs.com/eyeear/p/5278092.html</a><br>2.requestAnimationFrame 动画函数<br><a href="http://blog.csdn.net/qq_22509715/article/details/52328336" target="_blank" rel="external">http://blog.csdn.net/qq_22509715/article/details/52328336</a><br><a href="http://www.cnblogs.com/aaronjs/p/4283109.html" target="_blank" rel="external">http://www.cnblogs.com/aaronjs/p/4283109.html</a><br><a href="http://www.zhangxinxu.com/wordpress/2013/09/css3-animation-requestanimationframe-tween-%E5%8A%A8%E7%94%BB%E7%AE%97%E6%B3%95/" target="_blank" rel="external">http://www.zhangxinxu.com/wordpress/2013/09/css3-animation-requestanimationframe-tween-%E5%8A%A8%E7%94%BB%E7%AE%97%E6%B3%95/</a></p>
+<p>3.canvas 中文字 水平垂直居中<br><a href="http://www.cnblogs.com/lovling/p/6642518.html" target="_blank" rel="external">http://www.cnblogs.com/lovling/p/6642518.html</a></p>
+
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">webpack3.x</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">canvas</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">模块打包器</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">reqAnimationFrame</a>
         		</li>
       		
 		</ul>
 	</div>
 
-          
+      
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2017/04/12/canvas-动态圆形进度条/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
   
   
-    </div></section>
+    <a href="/2017/02/10/webpack使用/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">webpack3.x使用 (待更新...)</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+  
+  
   
 
-    
+  
+
+  
+
+  
 
 
           </div>
@@ -229,9 +356,9 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
+		isPost: true,
 		isArchive: false,
-		isTag: true,
+		isTag: false,
 		isCategory: false,
 		open_in_new: false,
 		toc_hide_index: true,
