@@ -6,14 +6,18 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Archives: 2016/3 | Lwenli_blog</title>
+  <title>vue 递归组件 | Lwenli_blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Lwenli_blog">
-<meta property="og:url" content="http://yoursite.com/archives/2016/03/index.html">
+  <meta name="keywords" content="vue,Vue.component">
+<meta property="og:type" content="article">
+<meta property="og:title" content="vue 递归组件">
+<meta property="og:url" content="http://yoursite.com/2016/05/06/vue递归组件/index.html">
 <meta property="og:site_name" content="Lwenli_blog">
+<meta property="og:image" content="http://yoursite.com/images/recursion.png">
+<meta property="og:updated_time" content="2017-11-07T14:34:17.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Lwenli_blog">
+<meta name="twitter:title" content="vue 递归组件">
+<meta name="twitter:image" content="http://yoursite.com/images/recursion.png">
   
     <link rel="alternative" href="/atom.xml" title="Lwenli_blog" type="application/atom+xml">
   
@@ -149,36 +153,62 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-vue递归组件" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2016" class="archive-year">2016</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2016/03/06/vue验证码倒计时/" class="archive-article-date">
-  	<time datetime="2016-03-05T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-03-06</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2016/03/06/vue验证码倒计时/">vue 倒计时验证码</a>
+    <h1 class="article-title" itemprop="name">
+      vue 递归组件
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
+        
+        <a href="/2016/05/06/vue递归组件/" class="archive-article-date">
+  	<time datetime="2016-05-05T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-05-06</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><div align="center"><br> <img src="/images/recursion.png" width="25%" alt="图片名称"><br></div><br><a id="more"></a></p>
+<p>什么是递归组件？</p>
+<blockquote>
+<p>组件在它的模板内可以递归地调用自己</p>
+</blockquote>
+<p>1.html<br>注意：如果稍有不慎，递归组件可能导致死循环：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;div id=&quot;app&quot;&gt;</div><div class="line">    &lt;child v-for=&quot;(text, index) in texts&quot;</div><div class="line">      :text=&apos;text&apos;</div><div class="line">      :key=&quot;index&quot;&gt;&lt;/child&gt;</div><div class="line">  &lt;/div&gt;</div></pre></td></tr></table></figure></p>
+<p>2.js<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div></pre></td><td class="code"><pre><div class="line">Vue.component(&apos;child&apos;, &#123;</div><div class="line">      props: [&apos;text&apos;],</div><div class="line">      data() &#123;</div><div class="line">        return &#123;isOpen: false&#125;</div><div class="line">      &#125;,</div><div class="line">      template: `&lt;ul&gt;</div><div class="line">          &lt;li @click=&quot;isOpen=!isOpen&quot;&gt;&#123;&#123;text.title&#125;&#125;&lt;/li&gt;</div><div class="line">          &lt;child ref=&apos;child&apos; v-show=&quot;isShow&quot; :text=&quot;text.titles&quot; v-if=&quot;text.titles&quot;&gt;&lt;/child&gt;</div><div class="line">        &lt;/ul&gt;`,</div><div class="line">      computed: &#123;</div><div class="line">        isShow() &#123;</div><div class="line">          if(this.$refs.child &amp;&amp; !this.isOpen) &#123;</div><div class="line">            this.$refs.child.isOpen = false;</div><div class="line">          &#125;</div><div class="line">          return this.isOpen;</div><div class="line">        &#125;</div><div class="line">      &#125;</div><div class="line">    &#125;)</div><div class="line">    const vm = new Vue(&#123;</div><div class="line">      el: &apos;#app&apos;,</div><div class="line">      data: &#123;</div><div class="line">        texts: [&#123;</div><div class="line">            title: &apos;vue&apos;,</div><div class="line">            titles: &#123;</div><div class="line">              title: &apos;node&apos;,</div><div class="line">              titles: &#123;</div><div class="line">                title: &apos;react&apos;,</div><div class="line">                titles: &#123;</div><div class="line">                  title: &apos;weex&apos;</div><div class="line">                &#125;</div><div class="line">              &#125;</div><div class="line">            &#125;</div><div class="line">          &#125;,</div><div class="line">          &#123;</div><div class="line">            title: &apos;vue&apos;,</div><div class="line">            titles: &#123;</div><div class="line">              title: &apos;node&apos;,</div><div class="line">              titles: &#123;</div><div class="line">                title: &apos;express&apos;</div><div class="line">              &#125;</div><div class="line">            &#125;</div><div class="line">          &#125;,</div><div class="line">          &#123;</div><div class="line">            title: &apos;vue&apos;,</div><div class="line">            titles: &#123;</div><div class="line">              title: &apos;node&apos;</div><div class="line">            &#125;</div><div class="line">          &#125;,</div><div class="line">          &#123;</div><div class="line">            title: &apos;vue&apos;,</div><div class="line">            titles: &#123;</div><div class="line">              title: &apos;node&apos;,</div><div class="line">              titles: &#123;</div><div class="line">                title: &apos;redux&apos;</div><div class="line">              &#125;</div><div class="line">            &#125;</div><div class="line">          &#125;</div><div class="line">        ]</div><div class="line">      &#125;</div><div class="line">    &#125;)</div></pre></td></tr></table></figure></p>
+
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -188,25 +218,121 @@
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">localStorage</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Vue.component</a>
         		</li>
       		
 		</ul>
 	</div>
 
-          
+      
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2016/05/06/vue递归组件/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
+  
+    <a href="/2016/05/17/mac终端工具-ITem2/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          mac终端工具-iTem2
+        
+      </div>
+    </a>
   
   
-    </div></section>
+    <a href="/2016/03/06/vue验证码倒计时/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">vue 倒计时验证码</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+  
+  
   
 
-    
+  
+
+  
+
+  
 
 
           </div>
@@ -229,8 +355,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,
