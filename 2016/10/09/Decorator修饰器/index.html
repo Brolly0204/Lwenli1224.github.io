@@ -6,14 +6,19 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Tag: redux-promise | Lwenli_blog</title>
+  <title>Decorator修饰器 | Lwenli_blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Lwenli_blog">
-<meta property="og:url" content="http://yoursite.com/tags/redux-promise/index.html">
+  <meta name="description" content="Decorator修饰器是一个对类进行处理的函数。修饰器函数的第一个参数，就是所要修饰的目标类。">
+<meta name="keywords" content="ES6,class,babel">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Decorator修饰器">
+<meta property="og:url" content="http://yoursite.com/2016/10/09/Decorator修饰器/index.html">
 <meta property="og:site_name" content="Lwenli_blog">
+<meta property="og:description" content="Decorator修饰器是一个对类进行处理的函数。修饰器函数的第一个参数，就是所要修饰的目标类。">
+<meta property="og:updated_time" content="2017-11-10T08:35:58.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Lwenli_blog">
+<meta name="twitter:title" content="Decorator修饰器">
+<meta name="twitter:description" content="Decorator修饰器是一个对类进行处理的函数。修饰器函数的第一个参数，就是所要修饰的目标类。">
   
     <link rel="alternative" href="/atom.xml" title="Lwenli_blog" type="application/atom+xml">
   
@@ -149,72 +154,194 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-Decorator修饰器" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2016" class="archive-year">2016</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2016/10/01/redux middleware详解/" class="archive-article-date">
-  	<time datetime="2016-10-01T06:56:25.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-10-01</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2016/10/01/redux middleware详解/">redux middleware详解</a>
+    <h1 class="article-title" itemprop="name">
+      Decorator修饰器
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
+        
+        <a href="/2016/10/09/Decorator修饰器/" class="archive-article-date">
+  	<time datetime="2016-10-08T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-10-09</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>Decorator修饰器是一个对类进行处理的函数。修饰器函数的第一个参数，就是所要修饰的目标类。</p>
+</blockquote>
+<a id="more"></a>
+<p>1.配置Babel：./babelrc<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">npm i babel-plugin-transform-decorators-legacy</div><div class="line"></div><div class="line">.babelrc</div><div class="line">&#123;</div><div class="line">  &quot;plugins&quot;: [</div><div class="line">    &quot;transform-decorators-legacy&quot;</div><div class="line">  ]</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>2.基本使用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">@testable</div><div class="line">class MyTestableClass &#123;</div><div class="line">  // ...</div><div class="line">&#125;</div><div class="line"></div><div class="line">function testable(target) &#123; // 函数的参数target，就是会被修饰的类。</div><div class="line">  target.isTestable = true;</div><div class="line">&#125;</div><div class="line"></div><div class="line">MyTestableClass.isTestable // true</div></pre></td></tr></table></figure></p>
+<p>3.修饰器等同于<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">@decorator</div><div class="line">class A &#123;&#125;</div><div class="line"></div><div class="line">// 等同于</div><div class="line"></div><div class="line">class A &#123;&#125;</div><div class="line">A = decorator(A) || A;</div></pre></td></tr></table></figure></p>
+<p>4.如果觉得一个参数不够用，可以在修饰器外面再封装一层函数 — 工厂方法。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">function testable(isTestable) &#123;</div><div class="line">  return function(target) &#123;</div><div class="line">    target.isTestable = isTestable;</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">@testable(true)</div><div class="line">class MyTestableClass &#123;&#125;</div><div class="line">MyTestableClass.isTestable // true</div><div class="line"></div><div class="line">@testable(false)</div><div class="line">class MyClass &#123;&#125;</div><div class="line">MyClass.isTestable // false</div></pre></td></tr></table></figure></p>
+<p>5.实际开发中，React 与 Redux 库结合使用时，常常需要写成下面这样。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">class MyReactComponent extends React.Component &#123;&#125;</div><div class="line"></div><div class="line">export default connect(mapStateToProps, mapDispatchToProps)(MyReactComponent);</div></pre></td></tr></table></figure></p>
+<p>有了装饰器，就可以改写上面的代码。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">@connect(mapStateToProps, mapDispatchToProps)</div><div class="line">export default class MyReactComponent extends React.Component &#123;&#125;</div></pre></td></tr></table></figure></p>
+<p>6.mixins<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">// mixins.js</div><div class="line">export function mixins(...list) &#123;</div><div class="line">  return function (target) &#123;</div><div class="line">    Object.assign(target.prototype, ...list)</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">// main.js</div><div class="line">import &#123; mixins &#125; from &apos;./mixins&apos;</div><div class="line"></div><div class="line">const Foo = &#123;</div><div class="line">  foo() &#123; console.log(&apos;foo&apos;) &#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line">@mixins(Foo)</div><div class="line">class MyClass &#123;&#125;</div><div class="line"></div><div class="line">let obj = new MyClass();</div><div class="line">obj.foo() // &apos;foo&apos;</div></pre></td></tr></table></figure></p>
+
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">js</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">ES6</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">redux-logger</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">class</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">redux-thunk</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">redux-promise</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">babel</a>
         		</li>
       		
 		</ul>
 	</div>
 
-          
+      
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2016/10/09/Decorator修饰器/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
+  
+    <a href="/2016/10/17/JS函数式编程/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          JS函数式编程
+        
+      </div>
+    </a>
   
   
-    </div></section>
+    <a href="/2016/10/01/redux middleware详解/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">redux middleware详解</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+  
+  
   
 
-    
+  
+
+  
+
+  
 
 
           </div>
@@ -237,9 +364,9 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
+		isPost: true,
 		isArchive: false,
-		isTag: true,
+		isTag: false,
 		isCategory: false,
 		open_in_new: false,
 		toc_hide_index: true,
