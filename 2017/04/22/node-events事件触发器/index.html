@@ -6,14 +6,21 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Archives: 2016 | Lwenli_blog</title>
+  <title>node events模块 - 事件触发器 | Lwenli_blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Lwenli_blog">
-<meta property="og:url" content="http://yoursite.com/archives/2016/index.html">
+  <meta name="description" content="events 模块 events 模块只提供了一个对象： events.EventEmitter。EventEmitter 的核心就是事件触发与事件监听器功能的封装">
+<meta name="keywords" content="EventEmitter,addListener,removeListener">
+<meta property="og:type" content="article">
+<meta property="og:title" content="node events模块 - 事件触发器">
+<meta property="og:url" content="http://yoursite.com/2017/04/22/node-events事件触发器/index.html">
 <meta property="og:site_name" content="Lwenli_blog">
+<meta property="og:description" content="events 模块 events 模块只提供了一个对象： events.EventEmitter。EventEmitter 的核心就是事件触发与事件监听器功能的封装">
+<meta property="og:image" content="http://yoursite.com/images/events.png">
+<meta property="og:updated_time" content="2017-11-18T15:55:11.083Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Lwenli_blog">
+<meta name="twitter:title" content="node events模块 - 事件触发器">
+<meta name="twitter:description" content="events 模块 events 模块只提供了一个对象： events.EventEmitter。EventEmitter 的核心就是事件触发与事件监听器功能的封装">
+<meta name="twitter:image" content="http://yoursite.com/images/events.png">
   
     <link rel="alternative" href="/atom.xml" title="Lwenli_blog" type="application/atom+xml">
   
@@ -149,255 +156,185 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-node-events事件触发器" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      node events模块 - 事件触发器
+    </h1>
+  
+
+        
+        <a href="/2017/04/22/node-events事件触发器/" class="archive-article-date">
+  	<time datetime="2017-04-22T04:46:25.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-04-22</time>
+</a>
+        
+      </header>
     
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="events-模块"><a href="#events-模块" class="headerlink" title="events 模块"></a>events 模块</h3><blockquote>
+<p>events 模块只提供了一个对象： events.EventEmitter。EventEmitter 的核心就是事件触发与事件监听器功能的封装</p>
+</blockquote>
+<a id="more"></a>
+<ul>
+<li>1.Node.js 所有的异步 I/O 操作在完成时都会发送一个事件到事件队列。</li>
+<li>2.Node.js里面的许多对象都会分发事件：一个net.Server对象会在每次有新连接时分发一个事件， 一个fs.readStream对象会在文件被打开的时候发出一个事件。 所有这些产生事件的对象都是 events.EventEmitter 的实例。</li>
+</ul>
+<h3 id="1-使用"><a href="#1-使用" class="headerlink" title="1.使用"></a>1.使用</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">const EventEmitter = require(&apos;events&apos;);</div><div class="line">const event = new EventEmitter();</div><div class="line">event.on(&apos;hello&apos;, function (res) &#123;</div><div class="line">    console.log(&apos;hello &apos; + res);</div><div class="line">&#125;);</div><div class="line"></div><div class="line">setTimeout(() =&gt; &#123;</div><div class="line">    event.emit(&apos;hello&apos;, &apos;node.js&apos;);</div><div class="line">&#125;, 1000);</div></pre></td></tr></table></figure>
+<h3 id="2-自己实现"><a href="#2-自己实现" class="headerlink" title="2.自己实现"></a>2.自己实现</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div></pre></td><td class="code"><pre><div class="line">function EventEmitter() &#123;</div><div class="line">    this._events = [];</div><div class="line">&#125;</div><div class="line"></div><div class="line">// 订阅</div><div class="line">EventEmitter.prototype.addListener = function (type, listener) &#123;</div><div class="line">    if (this._events[type]) &#123;</div><div class="line">        this._events[type].push(listener);</div><div class="line">    &#125; else &#123;</div><div class="line">        this._events[type] = [listener];</div><div class="line">    &#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line">EventEmitter.prototype.on = EventEmitter.prototype.addListener;</div><div class="line"></div><div class="line">// 发布多次 只执行一次</div><div class="line">EventEmitter.prototype.once = function (type, listener) &#123;</div><div class="line">  const fn = function () &#123;</div><div class="line">      listener.apply(this, arguments);</div><div class="line">      this.removeListener(type, fn);</div><div class="line">  &#125;;</div><div class="line">  this.on(type, fn);</div><div class="line">&#125;;</div><div class="line"></div><div class="line">// 发布</div><div class="line">EventEmitter.prototype.emit = function (type) &#123;</div><div class="line">    if (this._events[type]) &#123;</div><div class="line">        this._events[type].forEach(listener =&gt; &#123;</div><div class="line">            listener.apply(this, [].slice.call(arguments, 1));</div><div class="line">        &#125; )</div><div class="line">    &#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line">// 取消订阅</div><div class="line">EventEmitter.prototype.removeListener = function (type, listener) &#123;</div><div class="line">    if (this._events[type]) &#123;</div><div class="line">        this._events[type] = this._events[type].filter(event =&gt; event !== listener);</div><div class="line">    &#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line">module.exports = EventEmitter;</div></pre></td></tr></table></figure>
+<h3 id="3-导入自己的EventEmitter"><a href="#3-导入自己的EventEmitter" class="headerlink" title="3.导入自己的EventEmitter"></a>3.导入自己的EventEmitter</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">const EventEmitter = require(&apos;./2.EventEmitter&apos;);</div><div class="line">const event = new EventEmitter();</div><div class="line">// 只订阅一次</div><div class="line">event.once(&apos;hello&apos;, function (res) &#123;</div><div class="line">    console.log(&apos;hello &apos; + res);</div><div class="line">&#125;);</div><div class="line"></div><div class="line">setTimeout(() =&gt; &#123;</div><div class="line">    event.emit(&apos;hello&apos;, &apos;node.js&apos;);</div><div class="line">    event.emit(&apos;hello&apos;, &apos;node.js&apos;);</div><div class="line">    event.emit(&apos;hello&apos;, &apos;node.js&apos;);</div><div class="line">&#125;, 1000);</div></pre></td></tr></table></figure>
+<h3 id="4-最终输出"><a href="#4-最终输出" class="headerlink" title="4.最终输出"></a>4.最终输出</h3><div align="center"><br> <img src="/images/events.png" width="60%" alt="图片名称"><br></div>
+
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    </div>
+    <div class="article-info article-info-index">
       
       
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2016" class="archive-year">2016</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2016/12/24/全栈规划/" class="archive-article-date">
-  	<time datetime="2016-12-23T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-12-24</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2016/12/24/全栈规划/">全栈学习计划（待完善）</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">前端工程化</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">EventEmitter</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">个人知识体系</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">addListener</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">removeListener</a>
         		</li>
       		
 		</ul>
 	</div>
 
-          
+      
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2017/04/22/node-events事件触发器/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2016/10/17/JS函数式编程/" class="archive-article-date">
-  	<time datetime="2016-10-17T06:46:25.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-10-17</time>
-</a>
+<nav id="article-nav">
+  
+  
+    <a href="/2017/04/12/canvas-动态圆形进度条/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">canvas-动态圆形进度条</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
+        
+        
+    </div>
+</aside>
+
+
+
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2016/10/17/JS函数式编程/">JS函数式编程</a>
-    </h1>
+  
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">js</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">一等公民的函数</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">纯函数</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2016/10/09/Decorator修饰器/" class="archive-article-date">
-  	<time datetime="2016-10-08T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-10-09</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2016/10/09/Decorator修饰器/">Decorator修饰器</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">ES6</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">class</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">babel</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2016/10/01/redux middleware详解/" class="archive-article-date">
-  	<time datetime="2016-10-01T06:56:25.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-10-01</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2016/10/01/redux middleware详解/">redux middleware详解</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">js</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">redux-logger</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">redux-thunk</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">redux-promise</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2016/09/20/hello-world/" class="archive-article-date">
-  	<time datetime="2016-09-19T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-09-20</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2016/09/20/hello-world/">生成环境和开发环境</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">js</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">development 环境</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">production 环境</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
-
-    
-    <nav id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/archives/2016/page/2/">2</a><a class="page-number" href="/archives/2016/page/3/">3</a><a class="extend next" rel="next" href="/archives/2016/page/2/">Next &raquo;</a>
-    </nav>
   
 
 
@@ -421,8 +358,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,
