@@ -6,18 +6,18 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Promise 总结和实现 | Lwenli_blog</title>
+  <title>Promise 详解与实现 | Lwenli_blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="1.什么是Promise? Promise是JS异步编程中的重要概念，异步抽象处理对象，是目前比较流行Javascript异步编程解决方案之一">
 <meta name="keywords" content="Promise,then&#x2F;catch,all&#x2F;race">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Promise 总结和实现">
+<meta property="og:title" content="Promise 详解与实现">
 <meta property="og:url" content="http://yoursite.com/2018/01/12/Promise总结和实现/index.html">
 <meta property="og:site_name" content="Lwenli_blog">
 <meta property="og:description" content="1.什么是Promise? Promise是JS异步编程中的重要概念，异步抽象处理对象，是目前比较流行Javascript异步编程解决方案之一">
-<meta property="og:updated_time" content="2018-01-13T11:59:33.261Z">
+<meta property="og:updated_time" content="2018-01-13T12:05:38.518Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Promise 总结和实现">
+<meta name="twitter:title" content="Promise 详解与实现">
 <meta name="twitter:description" content="1.什么是Promise? Promise是JS异步编程中的重要概念，异步抽象处理对象，是目前比较流行Javascript异步编程解决方案之一">
   
     <link rel="alternative" href="/atom.xml" title="Lwenli_blog" type="application/atom+xml">
@@ -161,7 +161,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      Promise 总结和实现
+      Promise 详解与实现
     </h1>
   
 
@@ -182,11 +182,13 @@
 <li>回调函数</li>
 <li>事件监听</li>
 <li>发布/订阅</li>
-<li>Promise对象<h4 id="这里就拿回调函数说说"><a href="#这里就拿回调函数说说" class="headerlink" title="这里就拿回调函数说说"></a>这里就拿回调函数说说</h4>1.对于回调函数 我们用Jquery的ajax获取数据时 都是以回调函数方式获取的数据<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$.get(url, (data) =&gt; &#123;</div><div class="line">    console.log(data)</div><div class="line">)</div></pre></td></tr></table></figure>
-</li>
+<li>Promise对象</li>
 </ul>
+<h4 id="这里就拿回调函数说说"><a href="#这里就拿回调函数说说" class="headerlink" title="这里就拿回调函数说说"></a>这里就拿回调函数说说</h4><p>1.对于回调函数 我们用Jquery的ajax获取数据时 都是以回调函数方式获取的数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$.get(url, (data) =&gt; &#123;</div><div class="line">    console.log(data)</div><div class="line">)</div></pre></td></tr></table></figure></p>
 <p>2.如果说 当我们需要发送多个异步请求 并且每个请求之间需要相互依赖 那这时 我们只能 以嵌套方式来解决 形成 “回调地狱”<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">$.get(url, data1 =&gt; &#123;</div><div class="line">    console.log(data1)</div><div class="line">    $.get(data1.url, data2 =&gt; &#123;</div><div class="line">        console.log(data1)</div><div class="line">    &#125;)</div><div class="line">&#125;)</div></pre></td></tr></table></figure></p>
+<blockquote>
 <p>这样一来，在处理越多的异步逻辑时，就需要越深的回调嵌套，这种编码模式的问题主要有以下几个：</p>
+</blockquote>
 <ul>
 <li>代码逻辑书写顺序与执行顺序不一致，不利于阅读与维护。</li>
 <li>异步操作的顺序变更时，需要大规模的代码重构。</li>
@@ -229,8 +231,9 @@
 <p>2.Promise.reject 返回一个rejected状态的promise对象<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">Promise.reject(24);</div><div class="line">new Promise((resolve, reject) =&gt; &#123;</div><div class="line">   reject(24);</div><div class="line">&#125;);</div></pre></td></tr></table></figure></p>
 <p>3.Promise.all 接收一个promise对象数组为参数</p>
 <blockquote>
-<p>只有全部为resolve才会调用 通常会用来处理 多个并行异步操作<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">const p1 = new Promise((resolve, reject) =&gt; &#123;</div><div class="line">    resolve(1);</div><div class="line">&#125;);</div><div class="line"></div><div class="line">const p2 = new Promise((resolve, reject) =&gt; &#123;</div><div class="line">    resolve(2);</div><div class="line">&#125;);</div><div class="line"></div><div class="line">const p3 = new Promise((resolve, reject) =&gt; &#123;</div><div class="line">    reject(3);</div><div class="line">&#125;);</div><div class="line"></div><div class="line">Promise.all([p1, p2, p3]).then(data =&gt; &#123; </div><div class="line">    console.log(data); // [1, 2, 3] 结果顺序和promise实例数组顺序是一致的</div><div class="line">&#125;, err =&gt; &#123;</div><div class="line">    console.log(err);</div><div class="line">&#125;);</div></pre></td></tr></table></figure></p>
+<p>只有全部为resolve才会调用 通常会用来处理 多个并行异步操作</p>
 </blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">const p1 = new Promise((resolve, reject) =&gt; &#123;</div><div class="line">    resolve(1);</div><div class="line">&#125;);</div><div class="line"></div><div class="line">const p2 = new Promise((resolve, reject) =&gt; &#123;</div><div class="line">    resolve(2);</div><div class="line">&#125;);</div><div class="line"></div><div class="line">const p3 = new Promise((resolve, reject) =&gt; &#123;</div><div class="line">    reject(3);</div><div class="line">&#125;);</div><div class="line"></div><div class="line">Promise.all([p1, p2, p3]).then(data =&gt; &#123; </div><div class="line">    console.log(data); // [1, 2, 3] 结果顺序和promise实例数组顺序是一致的</div><div class="line">&#125;, err =&gt; &#123;</div><div class="line">    console.log(err);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
 <p>4.Promise.race 接收一个promise对象数组为参数</p>
 <blockquote>
 <p>Promise.race 只要有一个promise对象进入 FulFilled 或者 Rejected 状态的话，就会继续进行后面的处理。</p>
