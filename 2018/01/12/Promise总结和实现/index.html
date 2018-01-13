@@ -8,17 +8,17 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>Promise 总结和实现 | Lwenli_blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="1.什么是Promise? Promise是JS异步编程中的重要概念，异步抽象处理对象，是目前比较流行Javascript异步编程解决方案之一  2.对于几种常见异步编程方案 回调函数 事件监听 发布/订阅 Promise对象这里就拿回调函数说说1.对于回调函数 我们用Jquery的ajax获取数据时 都是以回调函数方式获取的数据123$.get(url, (data) =&amp;gt; &amp;#123;">
+  <meta name="description" content="1.什么是Promise? Promise是JS异步编程中的重要概念，异步抽象处理对象，是目前比较流行Javascript异步编程解决方案之一">
 <meta name="keywords" content="Promise,then&#x2F;catch,all&#x2F;race">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Promise 总结和实现">
 <meta property="og:url" content="http://yoursite.com/2018/01/12/Promise总结和实现/index.html">
 <meta property="og:site_name" content="Lwenli_blog">
-<meta property="og:description" content="1.什么是Promise? Promise是JS异步编程中的重要概念，异步抽象处理对象，是目前比较流行Javascript异步编程解决方案之一  2.对于几种常见异步编程方案 回调函数 事件监听 发布/订阅 Promise对象这里就拿回调函数说说1.对于回调函数 我们用Jquery的ajax获取数据时 都是以回调函数方式获取的数据123$.get(url, (data) =&amp;gt; &amp;#123;">
-<meta property="og:updated_time" content="2018-01-13T11:59:00.095Z">
+<meta property="og:description" content="1.什么是Promise? Promise是JS异步编程中的重要概念，异步抽象处理对象，是目前比较流行Javascript异步编程解决方案之一">
+<meta property="og:updated_time" content="2018-01-13T11:59:33.261Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Promise 总结和实现">
-<meta name="twitter:description" content="1.什么是Promise? Promise是JS异步编程中的重要概念，异步抽象处理对象，是目前比较流行Javascript异步编程解决方案之一  2.对于几种常见异步编程方案 回调函数 事件监听 发布/订阅 Promise对象这里就拿回调函数说说1.对于回调函数 我们用Jquery的ajax获取数据时 都是以回调函数方式获取的数据123$.get(url, (data) =&amp;gt; &amp;#123;">
+<meta name="twitter:description" content="1.什么是Promise? Promise是JS异步编程中的重要概念，异步抽象处理对象，是目前比较流行Javascript异步编程解决方案之一">
   
     <link rel="alternative" href="/atom.xml" title="Lwenli_blog" type="application/atom+xml">
   
@@ -177,6 +177,7 @@
         <h3 id="1-什么是Promise"><a href="#1-什么是Promise" class="headerlink" title="1.什么是Promise?"></a>1.什么是Promise?</h3><blockquote>
 <p>Promise是JS异步编程中的重要概念，异步抽象处理对象，是目前比较流行Javascript异步编程解决方案之一</p>
 </blockquote>
+<a id="more"></a>
 <h3 id="2-对于几种常见异步编程方案"><a href="#2-对于几种常见异步编程方案" class="headerlink" title="2.对于几种常见异步编程方案"></a>2.对于几种常见异步编程方案</h3><ul>
 <li>回调函数</li>
 <li>事件监听</li>
