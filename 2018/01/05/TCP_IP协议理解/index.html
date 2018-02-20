@@ -26,7 +26,7 @@
 <meta property="og:image" content="https://upload-images.jianshu.io/upload_images/2871338-54f3506003eef465.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/600">
 <meta property="og:image" content="https://upload-images.jianshu.io/upload_images/2871338-f15ec8d510fa30b4.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/600">
 <meta property="og:image" content="https://upload-images.jianshu.io/upload_images/2871338-114c15d081b44ebd.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/600">
-<meta property="og:updated_time" content="2018-02-20T08:12:47.585Z">
+<meta property="og:updated_time" content="2018-02-20T08:25:09.928Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="TCP&#x2F;IP协议理解">
 <meta name="twitter:description" content="一、协议在计算机网络与信息通讯领域里，人们经常提及 “协议” 一词。互联网中常用的协议有HTTP、TCP、IP等。">
@@ -274,7 +274,7 @@
 <p>检验范围包括首部和数据两部分，这也是 TCP 可靠传输的一个重要保障。</p>
 <h2 id="紧急指针-Urgent-Pointer"><a href="#紧急指针-Urgent-Pointer" class="headerlink" title="紧急指针 Urgent Pointer"></a>紧急指针 Urgent Pointer</h2><p>占 2 个字节。 仅在 URG = 1 时才有意义，它指出本报文段中的紧急数据的字节数。 当 URG = 1 时，发送方 TCP 就把紧急数据插入到本报文段数据的最前面，而在紧急数据后面的数据仍是普通数据。</p>
 <p>因此，紧急指针指出了紧急数据的末尾在报文段中的位置。</p>
-<h2 id="五、三次握手，四次挥手"><a href="#五、三次握手，四次挥手" class="headerlink" title="五、三次握手，四次挥手"></a>五、三次握手，四次挥手</h2><p>需要了解的信息：</p>
+<h2 id="六、三次握手，四次挥手"><a href="#六、三次握手，四次挥手" class="headerlink" title="六、三次握手，四次挥手"></a>六、三次握手，四次挥手</h2><p>需要了解的信息：</p>
 <ul>
 <li>ACK ： TCP协议规定，只有ACK=1时有效，也规定连接建立后所有发送的报文的ACK必须为1</li>
 <li>SYN(SYNchronization) ： 在连接建立时用来同步序号。当SYN=1而ACK=0时，表明这是一个连接请求报文。对方若同意建立连接，则应在响应报文中使SYN=1和ACK=1. 因此, SYN置1就表示这是一个连接请求或连接接受报文。</li>
