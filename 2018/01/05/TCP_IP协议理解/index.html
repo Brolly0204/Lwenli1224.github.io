@@ -23,10 +23,10 @@
 <meta property="og:image" content="https://pic2.zhimg.com/v2-379891bd70b881ace40430cd4fef4ce6_b.jpg">
 <meta property="og:image" content="https://pic4.zhimg.com/v2-1537cf5f46541187a14030c8ff0f8a5b_b.jpg">
 <meta property="og:image" content="https://pic4.zhimg.com/v2-63955c8436410907d6fe4697d5bf0b0c_b.jpg">
-<meta property="og:image" content="https://pic1.zhimg.com/v2-9cdd39da512d2a09a20aa77a05c6b0ad_b.jpg">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/2871338-54f3506003eef465.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/600">
 <meta property="og:image" content="https://upload-images.jianshu.io/upload_images/2871338-f15ec8d510fa30b4.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/600">
 <meta property="og:image" content="https://upload-images.jianshu.io/upload_images/2871338-114c15d081b44ebd.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/600">
-<meta property="og:updated_time" content="2018-02-20T08:10:26.712Z">
+<meta property="og:updated_time" content="2018-02-20T08:12:47.585Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="TCP&#x2F;IP协议理解">
 <meta name="twitter:description" content="一、协议在计算机网络与信息通讯领域里，人们经常提及 “协议” 一词。互联网中常用的协议有HTTP、TCP、IP等。">
@@ -232,7 +232,7 @@
 <p>应用层：报文（message），一般指完整的信息，传输层实现报文交付，位于应用层的信息分组称为报文； 传输层：报文段（segment），组成报文的每个分组； 网络层：分组（packet）是网络传输中的二进制格式单元，数据包（datapacket）是TCP/IP通信协议传输中的数据单位；通过网络传输的数据基本单元，包含一个报头和数据本身，其中报头描述了数据的目的地及其与其他数据之间的关系，可以理解为数据传输的分组，我们将通过网络传输的基本数据单元称为数据报（Datagram）； 链路层：帧（frame），数据链路层的协议数据单元，为了保证数据的可靠传输，把用户数据封装成帧； 物理层：PDU（bit），协议数据单元； 抓包，抓到的是传输层的包，packet/frame/Datagram/segment是存在于同条记录中的，这些是基于所在协议层的不同取了不同的名字。</p>
 <h2 id="五、TCP报文"><a href="#五、TCP报文" class="headerlink" title="五、TCP报文"></a>五、TCP报文</h2><h2 id="数据包"><a href="#数据包" class="headerlink" title="数据包"></a>数据包</h2><p><img src="https://pic4.zhimg.com/v2-63955c8436410907d6fe4697d5bf0b0c_b.jpg" alt=""></p>
 <p>IP 数据包在以太网数据包的负载里面，TCP数据包在IP数据包的负载里。</p>
-<p><img src="https://pic1.zhimg.com/v2-9cdd39da512d2a09a20aa77a05c6b0ad_b.jpg" alt=""></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/2871338-54f3506003eef465.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/600" alt=""></p>
 <h2 id="TCP-首部各字段的意义和作用"><a href="#TCP-首部各字段的意义和作用" class="headerlink" title="TCP 首部各字段的意义和作用"></a>TCP 首部各字段的意义和作用</h2><p>TCP首部最小为20字节，这20字节分为5行，每行4个字节也就是32个位。</p>
 <h2 id="源端口和目的端口-Port"><a href="#源端口和目的端口-Port" class="headerlink" title="源端口和目的端口 Port"></a>源端口和目的端口 Port</h2><ul>
 <li>源端口号：16位的源端口中包含初始化通信的端口。源端口和源IP地址的作用是标识报文的返回地址。</li>
