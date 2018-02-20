@@ -6,14 +6,30 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Archives: 2017/1 | Lwenli_blog</title>
+  <title>TCP/IP协议理解 | Lwenli_blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Lwenli_blog">
-<meta property="og:url" content="http://yoursite.com/archives/2017/01/index.html">
+  <meta name="description" content="一、协议在计算机网络与信息通讯领域里，人们经常提及 “协议” 一词。互联网中常用的协议有HTTP、TCP、IP等。">
+<meta name="keywords" content="OSI七层模型,TCP&#x2F;IP协议,TCP三次握手 四次挥手">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TCP&#x2F;IP协议理解">
+<meta property="og:url" content="http://yoursite.com/2018/01/05/TCP_IP协议理解/index.html">
 <meta property="og:site_name" content="Lwenli_blog">
+<meta property="og:description" content="一、协议在计算机网络与信息通讯领域里，人们经常提及 “协议” 一词。互联网中常用的协议有HTTP、TCP、IP等。">
+<meta property="og:image" content="https://pic3.zhimg.com/v2-3e1ff699008afcd62da9e3341c4c9fbe_b.jpg">
+<meta property="og:image" content="https://pic2.zhimg.com/v2-4fe0b5f06fc89af2f98ebd2690bc87ea_b.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/v2-4f0d5f94dbc6103b807da5dc1bb23478_b.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/v2-68c6c874e5e2547bbb0bc23fe572c7a6_b.jpg">
+<meta property="og:image" content="https://pic2.zhimg.com/v2-379891bd70b881ace40430cd4fef4ce6_b.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/v2-1537cf5f46541187a14030c8ff0f8a5b_b.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/v2-63955c8436410907d6fe4697d5bf0b0c_b.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/v2-9cdd39da512d2a09a20aa77a05c6b0ad_b.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/v2-1587e91f14923eae0fa7d846cb10df99_b.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/v2-6e5f05603526c1d259b300f20b8857a5_b.jpg">
+<meta property="og:updated_time" content="2018-02-20T07:56:48.731Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Lwenli_blog">
+<meta name="twitter:title" content="TCP&#x2F;IP协议理解">
+<meta name="twitter:description" content="一、协议在计算机网络与信息通讯领域里，人们经常提及 “协议” 一词。互联网中常用的协议有HTTP、TCP、IP等。">
+<meta name="twitter:image" content="https://pic3.zhimg.com/v2-3e1ff699008afcd62da9e3341c4c9fbe_b.jpg">
   
     <link rel="alternative" href="/atom.xml" title="Lwenli_blog" type="application/atom+xml">
   
@@ -149,36 +165,165 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-TCP_IP协议理解" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2017" class="archive-year">2017</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2017/01/05/TCP_IP协议理解/" class="archive-article-date">
-  	<time datetime="2017-01-04T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-01-05</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/01/05/TCP_IP协议理解/">TCP/IP协议理解</a>
+    <h1 class="article-title" itemprop="name">
+      TCP/IP协议理解
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
+        
+        <a href="/2018/01/05/TCP_IP协议理解/" class="archive-article-date">
+  	<time datetime="2018-01-04T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-05</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="一、协议"><a href="#一、协议" class="headerlink" title="一、协议"></a>一、协议</h2><p>在计算机网络与信息通讯领域里，人们经常提及 “协议” 一词。互联网中常用的协议有HTTP、TCP、IP等。</p>
+<a id="more"></a>
+<h2 id="协议的必要性"><a href="#协议的必要性" class="headerlink" title="协议的必要性"></a>协议的必要性</h2><p>简单来说，协议就是计算机与计算机之间通过网络通信时，事先达成的一种 “约定”。这种“约定”使不同厂商的设备、不同的CPU以及不同操作系统组成的计算机之间，只要遵循相同的协议就能够实现通信。这就好比一个中国人说汉语一个外国人说英语使用不同的国家语言进行沟通，怎么也无法理解。如果两个人约定好 都说中文或英文，就可以互相沟通通信。协议分为很多种，每一种协议都明确界定了它的行为规范。两台计算机必须能够支持相同的协议，并遵循相同协议进行处理，这样才能实现相互通信。</p>
+<h2 id="二、协议分层"><a href="#二、协议分层" class="headerlink" title="二、协议分层"></a>二、协议分层</h2><h2 id="TCP-IP协议"><a href="#TCP-IP协议" class="headerlink" title="TCP/IP协议"></a>TCP/IP协议</h2><p>TCP/IP 是用于因特网 (Internet) 的通信协议。 TCP/IP 通信协议是对计算机必须遵守的规则的描述，只有遵守这些规则，计算机之间才能进行通信。</p>
+<blockquote>
+<p>TCP (Transmission Control Protocol)和UDP(User Datagram Protocol)协议属于传输层协议。其中TCP提供IP环境下的数据可靠传输，它提供的服务包括数据流传送、可靠性、有效流控、全双工操作和多路复 用。通过面向连接、端到端和可靠的数据包发送。通俗说，它是事先为所发送的数据开辟出连接好的通道，然后再进行数据发送；而UDP则不为IP提供可靠性、 流控或差错恢复功能。一般来说，TCP对应的是可靠性要求高的应用，而UDP对应的则是可靠性要求低、传输经济的应用。 TCP支持的应用协议主要有：Telnet、FTP、SMTP等； UDP支持的应用层协议主要有：NFS（网络文件系统）、SNMP（简单网络管理协议）、DNS（主域名称系统）、TFTP（通用文件传输协议）等。 TCP/IP协议与低层的数据链路层和物理层无关，这也是TCP/IP的重要特点</p>
+</blockquote>
+<ul>
+<li>TCP(Transimision Control Protocal)</li>
+<li>传输控制协议</li>
+<li>可靠的、面向连接的协议</li>
+<li>传输效率低</li>
+<li>UDP(User Datagram Protocal)</li>
+<li>用户数据报协议</li>
+<li>不可靠的、无连接的服务</li>
+<li>传输效率高</li>
+</ul>
+<h2 id="TCP-IP协议族"><a href="#TCP-IP协议族" class="headerlink" title="TCP/IP协议族"></a>TCP/IP协议族</h2><p>TCP/IP是基于TCP和IP这两个最初的协议之上的不同的通信协议的大集合</p>
+<p><img src="https://pic3.zhimg.com/v2-3e1ff699008afcd62da9e3341c4c9fbe_b.jpg" alt=""></p>
+<h2 id="协议的分层"><a href="#协议的分层" class="headerlink" title="协议的分层"></a>协议的分层</h2><p>网络协议通常分不同层次进行开发，每一层分别负责不同的通信功能。一个协议族，比如TCP/IP，是一组不同层次上的多个协议的组合。 传统上来说 TCP/IP 被认为是一个四层协议, 而ISO（国际标准化组织），制定了一个国际标准OSI七层协议模型，OSI协议以OSI参考模型为基础界定了每个阶层的协议和每个阶层之间接口相关的标准。</p>
+<p><img src="https://pic2.zhimg.com/v2-4fe0b5f06fc89af2f98ebd2690bc87ea_b.jpg" alt=""></p>
+<h2 id="分层的作用"><a href="#分层的作用" class="headerlink" title="分层的作用"></a>分层的作用</h2><p><img src="https://pic3.zhimg.com/v2-4f0d5f94dbc6103b807da5dc1bb23478_b.jpg" alt=""></p>
+<h2 id="应用层"><a href="#应用层" class="headerlink" title="应用层"></a>应用层</h2><p>应用层为操作系统或网络应用程序提供访问网络服务的接口。应用层协议的代表包括：Telnet、FTP、HTTP、SNMP等。</p>
+<h2 id="表示层"><a href="#表示层" class="headerlink" title="表示层"></a>表示层</h2><p>将应用处理的信息转换为适合网络传输的格式，或将来自下一层的数据转换为上层能够处理的格式。数据的表示、安全、压缩。</p>
+<h2 id="会话层"><a href="#会话层" class="headerlink" title="会话层"></a>会话层</h2><p>负责建立和断开通信连接（数据流动的逻辑通路），以及数据的分割等数据传输相关的管理。</p>
+<h2 id="传输层"><a href="#传输层" class="headerlink" title="传输层"></a>传输层</h2><p>管理两个节点之间的数据传输。负责可靠传输（确保数据被可靠地传送到目标地址）。</p>
+<h2 id="网络层"><a href="#网络层" class="headerlink" title="网络层"></a>网络层</h2><p>地址管理与路由选择, 在这一层，数据的单位称为数据包（packet）（路由器）。</p>
+<h2 id="数据链路层"><a href="#数据链路层" class="headerlink" title="数据链路层"></a>数据链路层</h2><p>互连设备之间传送和识别数据帧（交换机）。</p>
+<h2 id="物理层"><a href="#物理层" class="headerlink" title="物理层"></a>物理层</h2><p>以”0”、 “1”代表电压的高低，灯光的闪灭，在这一层，数据的单位称为比特（bit）,（中继器、集线器、还有我们通常说的双绞线也工作在物理层）。</p>
+<h2 id="七层通信"><a href="#七层通信" class="headerlink" title="七层通信"></a>七层通信</h2><p><img src="https://pic1.zhimg.com/v2-68c6c874e5e2547bbb0bc23fe572c7a6_b.jpg" alt=""></p>
+<p>发送方由第七层到第一层 由上到下按照顺序传送数据，每个分层在处理上层传递的数据时，附上当前层协议所必须的 “首部”信息。接收方由第一层到第七层 由下到上按照顺序传递数据，每个分层对接收到的数据进行 “首部”与”内容”分离，在转发给上一层。最终将发送的数据恢复为原始数据。</p>
+<h2 id="三、传输方式的分类"><a href="#三、传输方式的分类" class="headerlink" title="三、传输方式的分类"></a>三、传输方式的分类</h2><p>网络通信科根据数据发送方法进行多种分类，分类方法很多，下面列举几种常见的：</p>
+<ol>
+<li>面向有连接型和面向无连接型 1.1 面向有连接型</li>
+</ol>
+<p><img src="https://pic2.zhimg.com/v2-379891bd70b881ace40430cd4fef4ce6_b.jpg" alt=""></p>
+<p>发送数据之前，需要在收发主机之间建立一条通信线路，在通信传输前后，专门进行建立和断开连接的处理，如果与对端之间无法通信，可避免发送无谓的数据</p>
+<p>1.2面向无连接型</p>
+<p><img src="https://pic4.zhimg.com/v2-1537cf5f46541187a14030c8ff0f8a5b_b.jpg" alt=""></p>
+<h2 id="四、报文、帧、数据包等的区别"><a href="#四、报文、帧、数据包等的区别" class="headerlink" title="四、报文、帧、数据包等的区别"></a>四、报文、帧、数据包等的区别</h2><blockquote>
+<p>报文（message）是网络中交换与传输的数据单元，也是网络传输的单元。报文包含了将要发送的完整的数据信息，其长短不需一致。报文在传输过程中会不断地封装成分组、包、帧来传输，封装的方式就是添加一些控制信息组成的首部，那些就是报文头。</p>
+</blockquote>
+<p>应用层：报文（message），一般指完整的信息，传输层实现报文交付，位于应用层的信息分组称为报文； 传输层：报文段（segment），组成报文的每个分组； 网络层：分组（packet）是网络传输中的二进制格式单元，数据包（datapacket）是TCP/IP通信协议传输中的数据单位；通过网络传输的数据基本单元，包含一个报头和数据本身，其中报头描述了数据的目的地及其与其他数据之间的关系，可以理解为数据传输的分组，我们将通过网络传输的基本数据单元称为数据报（Datagram）； 链路层：帧（frame），数据链路层的协议数据单元，为了保证数据的可靠传输，把用户数据封装成帧； 物理层：PDU（bit），协议数据单元； 抓包，抓到的是传输层的包，packet/frame/Datagram/segment是存在于同条记录中的，这些是基于所在协议层的不同取了不同的名字。</p>
+<h2 id="五、TCP报文"><a href="#五、TCP报文" class="headerlink" title="五、TCP报文"></a>五、TCP报文</h2><h2 id="数据包"><a href="#数据包" class="headerlink" title="数据包"></a>数据包</h2><p><img src="https://pic4.zhimg.com/v2-63955c8436410907d6fe4697d5bf0b0c_b.jpg" alt=""></p>
+<p>IP 数据包在以太网数据包的负载里面，TCP数据包在IP数据包的负载里。</p>
+<p><img src="https://pic1.zhimg.com/v2-9cdd39da512d2a09a20aa77a05c6b0ad_b.jpg" alt=""></p>
+<h2 id="TCP-首部各字段的意义和作用"><a href="#TCP-首部各字段的意义和作用" class="headerlink" title="TCP 首部各字段的意义和作用"></a>TCP 首部各字段的意义和作用</h2><p>TCP首部最小为20字节，这20字节分为5行，每行4个字节也就是32个位。</p>
+<h2 id="源端口和目的端口-Port"><a href="#源端口和目的端口-Port" class="headerlink" title="源端口和目的端口 Port"></a>源端口和目的端口 Port</h2><ul>
+<li>源端口号：16位的源端口中包含初始化通信的端口。源端口和源IP地址的作用是标识报文的返回地址。</li>
+<li>目的端口号：16位的目的端口域定义传输的目的。这个端口指明报文接收计算机上的应用程序地址接口。计算机通过端口号识别访问哪个服务,比如http服务或ftp服务，发送方端口号是进行随机端口，目标端口号决定了接收方哪个程序来接收 分别占用16位，也就是端口号最大是2^16，所以端口号的范围是0~65536</li>
+</ul>
+<p>端口号的分配：</p>
+<ul>
+<li>知名端口号一般位于：1 — 255 之间</li>
+<li>256 — 1023的端口号，通常是由Unix系统占用（系统占用）</li>
+<li>1024 —5000 是大多数TCP、IP实现的临时分配</li>
+<li>大于5000的一般是给其他服务预留的（Internet上并不常用的服务）</li>
+</ul>
+<h2 id="序号-Sequence-Number"><a href="#序号-Sequence-Number" class="headerlink" title="序号 Sequence Number"></a>序号 Sequence Number</h2><p>TCP用序列号对数据包进行标记，以便在到达目的地后重新重装，假设当前的序列号为 s，发送数据长度为 l，则下次发送数据时的序列号为 s + l。在建立连接时通常由计算机生成一个随机数作为序列号的初始值。</p>
+<h2 id="确认号-Acknowledgemt-Number"><a href="#确认号-Acknowledgemt-Number" class="headerlink" title="确认号 Acknowledgemt Number"></a>确认号 Acknowledgemt Number</h2><p>占 4 个字节，表示期望收到对方下一个报文段的序号值。 TCP 的可靠性，是建立在「每一个数据报文都需要确认收到」的基础之上的。</p>
+<p>就是说，通讯的任何一方在收到对方的一个报文之后，都要发送一个相对应的「确认报文」，来表达确认收到。 那么，确认报文，就会包含确认号。 例如，通讯的一方收到了第一个 25kb 的报文，该报文的 序号值=0，那么就需要回复一个确认报文，其中的确认号 = 25600.</p>
+<h2 id="数据偏移-Offset"><a href="#数据偏移-Offset" class="headerlink" title="数据偏移 Offset"></a>数据偏移 Offset</h2><p>占 0.5 个字节 (4 位)。 这个字段实际上是指出了 TCP 报文段的首部长度 ，它指出了 TCP报文段的数据起始处 距离 TCP报文的起始处 有多远。（注意 数据起始处 和 报文起始处 的意思）</p>
+<p>一个数据偏移量 = 4 byte，由于 4 位二进制数能表示的最大十进制数字是 15，因此数据偏移的最大值是 60 byte，这也侧面限制了 TCP 首部的最大长度。</p>
+<h2 id="保留-Reserved"><a href="#保留-Reserved" class="headerlink" title="保留 Reserved"></a>保留 Reserved</h2><p>占 0.75 个字节 (6 位)。 保留为今后使用，但目前应置为 0。</p>
+<h2 id="标志位-TCP-Flags"><a href="#标志位-TCP-Flags" class="headerlink" title="标志位 TCP Flags"></a>标志位 TCP Flags</h2><p>标志位，一共有 6 个，分别占 1 位，共 6 位 。 每一位的值只有 0 和 1，分别表达不同意思。</p>
+<ul>
+<li>ACK：确认序号有效</li>
+<li>RST：重置连接</li>
+<li>SYN：发起了一个新连接</li>
+<li>FIN：释放一个连接</li>
+</ul>
+<h2 id="确认-ACK-Acknowlegemt"><a href="#确认-ACK-Acknowlegemt" class="headerlink" title="确认 ACK (Acknowlegemt)"></a>确认 ACK (Acknowlegemt)</h2><p>当 ACK = 1 的时候，确认号（Acknowledgemt Number）有效。 一般称携带 ACK 标志的 TCP 报文段为「确认报文段」。为0表示数据段不包含确认信息，确认号被忽略。</p>
+<p>TCP 规定，在连接建立后所有传送的报文段都必须把 ACK 设置为 1。</p>
+<h2 id="推送-PSH-Push"><a href="#推送-PSH-Push" class="headerlink" title="推送 PSH (Push)"></a>推送 PSH (Push)</h2><p>当 PSH = 1 的时候，表示该报文段高优先级，接收方 TCP 应该尽快推送给接收应用程序，而不用等到整个 TCP 缓存都填满了后再交付。</p>
+<h2 id="复位-RST-Reset"><a href="#复位-RST-Reset" class="headerlink" title="复位 RST (Reset)"></a>复位 RST (Reset)</h2><p>当 RST = 1 的时候，表示 TCP 连接中出现严重错误，需要释放并重新建立连接。 一般称携带 RST 标志的 TCP 报文段为「复位报文段」。</p>
+<h2 id="同步-SYN-SYNchronization"><a href="#同步-SYN-SYNchronization" class="headerlink" title="同步 SYN (SYNchronization)"></a>同步 SYN (SYNchronization)</h2><p>当 SYN = 1 的时候，表明这是一个请求连接报文段。 一般称携带 SYN 标志的 TCP 报文段为「同步报文段」。 在 TCP 三次握手中的第一个报文就是同步报文段，在连接建立时用来同步序号。</p>
+<p>对方若同意建立连接，则应在响应的报文段中使 SYN = 1 和 ACK = 1。</p>
+<h2 id="终止-FIN-Finis"><a href="#终止-FIN-Finis" class="headerlink" title="终止 FIN (Finis)"></a>终止 FIN (Finis)</h2><p>当 FIN = 1 时，表示此报文段的发送方的数据已经发送完毕，并要求释放 TCP 连接。</p>
+<p>一般称携带 FIN 的报文段为「结束报文段」。</p>
+<p>在 TCP 四次挥手释放连接的时候，就会用到该标志。</p>
+<h2 id="窗口大小-Window-Size"><a href="#窗口大小-Window-Size" class="headerlink" title="窗口大小 Window Size"></a>窗口大小 Window Size</h2><p>占 2 字节。</p>
+<p>该字段明确指出了现在允许对方发送的数据量，它告诉对方本端的 TCP 接收缓冲区还能容纳多少字节的数据，这样对方就可以控制发送数据的速度。 窗口大小的值是指，从本报文段首部中的确认号算起，接收方目前允许对方发送的数据量。</p>
+<p>例如，假如确认号是 701 ，窗口字段是 1000。这就表明，从 701 号算起，发送此报文段的一方还有接收 1000 （字节序号是 701 ~ 1700） 个字节的数据的接收缓存空间。</p>
+<h2 id="校验和-TCP-Checksum"><a href="#校验和-TCP-Checksum" class="headerlink" title="校验和 TCP Checksum"></a>校验和 TCP Checksum</h2><p>占 2 个字节。 由发送端填充，接收端对 TCP 报文段执行 CRC 算法，以检验 TCP 报文段在传输过程中是否损坏，如果损坏这丢弃。</p>
+<p>检验范围包括首部和数据两部分，这也是 TCP 可靠传输的一个重要保障。</p>
+<h2 id="紧急指针-Urgent-Pointer"><a href="#紧急指针-Urgent-Pointer" class="headerlink" title="紧急指针 Urgent Pointer"></a>紧急指针 Urgent Pointer</h2><p>占 2 个字节。 仅在 URG = 1 时才有意义，它指出本报文段中的紧急数据的字节数。 当 URG = 1 时，发送方 TCP 就把紧急数据插入到本报文段数据的最前面，而在紧急数据后面的数据仍是普通数据。</p>
+<p>因此，紧急指针指出了紧急数据的末尾在报文段中的位置。</p>
+<h2 id="五、三次握手，四次挥手"><a href="#五、三次握手，四次挥手" class="headerlink" title="五、三次握手，四次挥手"></a>五、三次握手，四次挥手</h2><p>需要了解的信息：</p>
+<ul>
+<li>ACK ： TCP协议规定，只有ACK=1时有效，也规定连接建立后所有发送的报文的ACK必须为1</li>
+<li>SYN(SYNchronization) ： 在连接建立时用来同步序号。当SYN=1而ACK=0时，表明这是一个连接请求报文。对方若同意建立连接，则应在响应报文中使SYN=1和ACK=1. 因此, SYN置1就表示这是一个连接请求或连接接受报文。</li>
+<li>FIN （finis）即完，终结的意思， 用来释放一个连接。当 FIN = 1 时，表明此报文段的发送方的数据已经发送完毕，并要求释放连接。</li>
+</ul>
+<h2 id="三次握手-建立连接"><a href="#三次握手-建立连接" class="headerlink" title="三次握手 建立连接"></a>三次握手 建立连接</h2><p>TCP（Transmission Control Protocol，传输控制协议）是 面向连接的协议，也就是说在收发数据之前，必须先和对方建立连接</p>
+<p>一个TCP连接必须要经过三次“对话”才能建立起来，其中的过程非常复杂，只简单的 描述下这三次对话的简单过程：主机A向主机B发出连接请求数据包：“我想给你发数据，可以吗？”，这是第一次对话；主机B向主机A发送同意连接和要求同步 （同步就是两台主机一个在发送，一个在接收，协调工作）的数据包：“可以，你什么时候发？”，这是第二次对话；主机A再发出一个数据包确认主机B的要求同 步：“我现在就发，你接着吧！”，这是第三次对话。三次“对话”的目的是使数据包的发送和接收同步，经过三次“对话”之后，主机A才向主机B正式发送数 据。</p>
+<p><img src="https://pic3.zhimg.com/v2-1587e91f14923eae0fa7d846cb10df99_b.jpg" alt=""></p>
+<p>首先由Client发出请求连接即 SYN=1 ACK=0 (请看头字段的介绍), TCP规定SYN=1时不能携带数据，但要消耗一个序号,因此声明自己的32位序号是 seq=x，然后 Server 进行回复确认，即 SYN=1 ACK=1 seq=y, ack=x+1, 再然后 Client 再进行一次确认，但不用SYN 了，这时即为 ACK=1, seq=x+1, ack=y+1.</p>
+<h2 id="四次挥手-释放连接"><a href="#四次挥手-释放连接" class="headerlink" title="四次挥手 释放连接"></a>四次挥手 释放连接</h2><p><img src="https://pic1.zhimg.com/v2-6e5f05603526c1d259b300f20b8857a5_b.jpg" alt=""></p>
+<p>当客户A 没有东西要发送时就要释放 A 这边的连接，A会发送一个报文（没有数据），其中 FIN 设置为1, 服务器B收到后会给应用程序一个信，这时A那边的连接已经关闭，即A不再发送信息（但仍可接收信息）。 A收到B的确认后进入等待状态，等待B请求释放连接， B数据发送完成后就向A请求连接释放，也是用FIN=1 表示， 并且用 ack = u+1(如图）， A收到后回复一个确认信息，并进入 TIME_WAIT 状态， 等待 2MSL 时间。</p>
+<blockquote>
+<p>关于 TIME_WAIT 过渡到 CLOSED 状态说明： 从 TIME_WAIT 进入 CLOSED 需要经过 2MSL，其中 MSL 就叫做 最长报文段寿命（Maxinum Segment Lifetime），根据 RFC 793 建议该值这是为 2 分钟，也就是说需要经过 4 分钟，才进入 CLOSED 状态。</p>
+</blockquote>
+<h2 id="为什么要等待呢？"><a href="#为什么要等待呢？" class="headerlink" title="为什么要等待呢？"></a>为什么要等待呢？</h2><p>为了这种情况： B向A发送 FIN = 1 的释放连接请求，但这个报文丢失了， A没有接到不会发送确认信息， B 超时会重传，这时A在 WAIT_TIME 还能够接收到这个请求，这时再回复一个确认就行了。（A收到 FIN = 1 的请求后 WAIT_TIME会重新记时）</p>
+<p>另外服务器B存在一个保活状态，即如果A突然故障死机了，那B那边的连接资源什么时候能释放呢？ 就是保活时间到了后，B会发送探测信息， 以决定是否释放连接</p>
+<h2 id="为什么连接的时候是三次握手，关闭的时候却是四次握手？"><a href="#为什么连接的时候是三次握手，关闭的时候却是四次握手？" class="headerlink" title="为什么连接的时候是三次握手，关闭的时候却是四次握手？"></a>为什么连接的时候是三次握手，关闭的时候却是四次握手？</h2><p>答：因为当Server端收到Client端的SYN连接请求报文后，可以直接发送SYN+ACK报文。其中ACK报文是用来应答的，SYN报文是用来同步的。但是关闭连接时，当Server端收到FIN报文时，很可能并不会立即关闭SOCKET，所以只能先回复一个ACK报文，告诉Client端，”你发的FIN报文我收到了”。只有等到我Server端所有的报文都发送完了，我才能发送FIN报文，因此不能一起发送。故需要四步握手。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="http://blog.csdn.net/cd520yy/article/details/12968923" target="_blank" rel="external">OSI七层与TCP/IP详解</a></li>
+<li><a href="https://www.jianshu.com/p/ef892323e68f" target="_blank" rel="external">TCP/IP报文</a></li>
+<li><a href="http://blog.csdn.net/xulu_258/article/details/51146489" target="_blank" rel="external">TCP三次握手四次挥手</a></li>
+</ul>
+
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -198,19 +343,115 @@
 		</ul>
 	</div>
 
-          
+      
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2018/01/05/TCP_IP协议理解/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
+  
+    <a href="/2018/01/12/Promise详解和实现/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          Promise 详解与实现
+        
+      </div>
+    </a>
   
   
-    </div></section>
+    <a href="/2017/12/24/vue-cli_axios_proxy/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Vue-cli_axios_proxy代理(请求qq音乐列表接口)</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+  
+  
   
 
-    
+  
+
+  
+
+  
 
 
           </div>
@@ -233,8 +474,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,
