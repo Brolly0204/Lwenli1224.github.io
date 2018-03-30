@@ -8,20 +8,20 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>Express源码学习-路由篇 | Lwenli_blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Express 简介Express 是一个简洁而灵活的 node.js Web应用框架, 提供了一系列强大特性帮助你创建各种 Web 应用，和丰富的 HTTP 工具。使用 Express 可以快速地搭建一个完整功能的网站。 Express官网 也是一个非常友好的文档。">
+  <meta name="description" content="Express 简介Express 是一个简洁而灵活的 node.js Web应用框架, 提供了一系列强大特性帮助你创建各种 Web 应用，和丰富的 HTTP 工具。使用 Express 可以快速地搭建一个完整功能的网站。">
 <meta name="keywords" content="Javascript,Express,Nodejs">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Express源码学习-路由篇">
 <meta property="og:url" content="http://yoursite.com/2018/03/23/Express源码学习-路由篇/index.html">
 <meta property="og:site_name" content="Lwenli_blog">
-<meta property="og:description" content="Express 简介Express 是一个简洁而灵活的 node.js Web应用框架, 提供了一系列强大特性帮助你创建各种 Web 应用，和丰富的 HTTP 工具。使用 Express 可以快速地搭建一个完整功能的网站。 Express官网 也是一个非常友好的文档。">
+<meta property="og:description" content="Express 简介Express 是一个简洁而灵活的 node.js Web应用框架, 提供了一系列强大特性帮助你创建各种 Web 应用，和丰富的 HTTP 工具。使用 Express 可以快速地搭建一个完整功能的网站。">
 <meta property="og:image" content="https://user-gold-cdn.xitu.io/2018/3/24/16254195ec260680?w=328&h=502&f=png&s=25802">
 <meta property="og:image" content="https://user-gold-cdn.xitu.io/2018/3/24/162541b0548860b4?w=1436&h=738&f=png&s=113014">
 <meta property="og:image" content="https://user-gold-cdn.xitu.io/2018/3/24/162541b9e6069980?w=786&h=186&f=png&s=28655">
-<meta property="og:updated_time" content="2018-03-30T17:06:54.179Z">
+<meta property="og:updated_time" content="2018-03-30T17:36:40.978Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Express源码学习-路由篇">
-<meta name="twitter:description" content="Express 简介Express 是一个简洁而灵活的 node.js Web应用框架, 提供了一系列强大特性帮助你创建各种 Web 应用，和丰富的 HTTP 工具。使用 Express 可以快速地搭建一个完整功能的网站。 Express官网 也是一个非常友好的文档。">
+<meta name="twitter:description" content="Express 简介Express 是一个简洁而灵活的 node.js Web应用框架, 提供了一系列强大特性帮助你创建各种 Web 应用，和丰富的 HTTP 工具。使用 Express 可以快速地搭建一个完整功能的网站。">
 <meta name="twitter:image" content="https://user-gold-cdn.xitu.io/2018/3/24/16254195ec260680?w=328&h=502&f=png&s=25802">
   
     <link rel="alternative" href="/atom.xml" title="Lwenli_blog" type="application/atom+xml">
@@ -179,7 +179,6 @@
     <div class="article-entry" itemprop="articleBody">
       
         <h2 id="Express-简介"><a href="#Express-简介" class="headerlink" title="Express 简介"></a>Express 简介</h2><p>Express 是一个简洁而灵活的 node.js Web应用框架, 提供了一系列强大特性帮助你创建各种 Web 应用，和丰富的 HTTP 工具。<br>使用 Express 可以快速地搭建一个完整功能的网站。</p>
-<p><a href="http://www.expressjs.com.cn/" target="_blank" rel="external">Express官网</a> 也是一个非常友好的文档。</p>
 <a id="more"></a>
 <p>Express 框架核心特性：</p>
 <ul>
@@ -244,6 +243,7 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">Layer.prototype.handle_request = function handle(req, res, next) &#123;</div><div class="line">  var fn = this.handle;  // 获取new Layer时保存的handle</div><div class="line">    // function Layer() &#123;</div><div class="line">        // this.handle = fn;</div><div class="line">    // &#125;</div><div class="line"></div><div class="line">  if (fn.length &gt; 3) &#123;</div><div class="line">    // not a standard request handler</div><div class="line">    return next();</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  try &#123;</div><div class="line">    fn(req, res, next);</div><div class="line">  &#125; catch (err) &#123;</div><div class="line">    next(err);</div><div class="line">  &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
 <h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>app.use用来添加非路由中间件，app[method]添加路由中间件，中间件的添加需要借助Router和Route来完成，app相当于是facade，对添加细节进行了包装。</p>
 <p>Router可以看做是一个存放了中间件的容器。对于里面存放的路由中间件，Router.stack中的layer有个route属性指向了对应的路由对象，从而将Router.stack与Route.stack关联起来，可以通过Router遍历到路由对象的各个处理程序。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://www.expressjs.com.cn/" target="_blank" rel="external">Express官网</a>是一个非常友好的文档。</p>
 
       
 
