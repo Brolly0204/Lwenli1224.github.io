@@ -171,7 +171,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>  <div align="center"><br>    <img src="/images/webpack.jpeg" width="80%"><br>    </div><br>    <br></p>
+        <p>  <div align="center"><br>    <img src="/images/webpack.jpeg" width="70%"><br>    </div><br>    <br></p>
         
           <a class="article-more-a" href="/2018/03/29/webpack4.0打包优化策略整理/#more">more >></a>
         
@@ -254,25 +254,9 @@
         <h1 id="babel插件编写"><a href="#babel插件编写" class="headerlink" title="babel插件编写"></a>babel插件编写</h1><blockquote>
 <p>编写一个模块按需加载的babel插件</p>
 </blockquote>
-<p>当我们导入lodash中指定的工具函数时 会将整个lodash打包进来</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">import &#123;flattenDeep, chunk&#125; from &apos;lodash&apos;</div></pre></td></tr></table></figure>
-<p>换成按需引入的写法 但是这样写有些麻烦 我们想由上面写法 自动分解为下面写法 所以我们就编写一个babel插件</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">import flattenDeep from &apos;lodash/flattenDeep&apos;</div><div class="line">import chunk from &apos;lodash/chunk&apos;</div></pre></td></tr></table></figure>
-<h2 id="Install-package"><a href="#Install-package" class="headerlink" title="Install package"></a>Install package</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">npm i babel-core -D</div><div class="line">npm i babel-types -D</div></pre></td></tr></table></figure>
-<h2 id="插件编写"><a href="#插件编写" class="headerlink" title="插件编写"></a>插件编写</h2><p>在当前工程的node_modules下创建一个babel-plugin-extract目录 里面创建index.js</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">const babel = require(&apos;babel-core&apos;);</div><div class="line">const types = require(&apos;babel-types&apos;);</div><div class="line"></div><div class="line">// 将import &#123;flattenDeep, chunk&#125; from &apos;lodash&apos; 转化为下面这种写法:</div><div class="line">// import flattenDeep from &apos;lodash/flattenDepp&apos;</div><div class="line">// import chunk from &apos;lodash/chunk&apos;</div><div class="line"></div><div class="line">// Babel将源码转换AST之后，通过遍历AST树（其实就是一个js对象），对树做一些修改，然后再将AST转成code，即成源码。</div><div class="line">let visitor = &#123;</div><div class="line">    // import 语句解析时触发该函数</div><div class="line">    ImportDeclaration(path, ref = &#123;opts: &#123;&#125;&#125;) &#123;  //path 语句抽象语法树 opts 插件参数</div><div class="line">        let node = path.node;</div><div class="line">        let &#123;specifiers&#125; = node; // 导入的包的说明符 是个数组集合</div><div class="line">        // 确认导入库 是否是 .babelrc library属性指定库 以及 如果不是默认导入 才进行按需导入加载</div><div class="line">        if (ref.opts.library === node.source.value &amp;&amp; !types.isImportDefaultSpecifier(specifiers[0])) &#123;</div><div class="line">            let newImports = specifiers.map(specifier =&gt; ( // 遍历 出导入的每个包的说明描述符</div><div class="line">                types.importDeclaration([types.importDefaultSpecifier(specifier.local)],</div><div class="line">                // 生成import语句如 import chunk from &apos;lodash/chunk&apos;</div><div class="line">                types.stringLiteral(`$&#123;node.source.value&#125;/$&#123;specifier.local.name&#125;`))</div><div class="line">            ));</div><div class="line"></div><div class="line">            // 将原有语句写法替换掉 新写法</div><div class="line">           path.replaceWithMultiple(newImports);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">module.exports = function(babel) &#123; // 将插件导出</div><div class="line">    return &#123;visitor&#125; // 属性名固定为visitor（访问者）</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
-<h2 id="配置-babelrc"><a href="#配置-babelrc" class="headerlink" title="配置.babelrc"></a>配置.babelrc</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    &quot;presets&quot;: [</div><div class="line">        &quot;env&quot;,</div><div class="line">        &quot;stage-0&quot;</div><div class="line">    ],</div><div class="line">    &quot;plugins&quot;: [</div><div class="line">        [</div><div class="line">            &quot;extract&quot;, // 配置插件</div><div class="line">            &#123;</div><div class="line">                &quot;library&quot;: &quot;lodash&quot; // 指定处理的库</div><div class="line">            &#125;</div><div class="line">        ]</div><div class="line">    ]</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="build"><a href="#build" class="headerlink" title="build"></a>build</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm run build // 此时编译后的bundle.js变小了</div></pre></td></tr></table></figure>
-<h2 id="源码地址"><a href="#源码地址" class="headerlink" title="源码地址"></a>源码地址</h2><p>先npm install 然后将源码目录中babel-plugin-extract目录 挪到 node_modules下，npm run build<br><a href="https://github.com/Lwenli1224/babel-plugin-extract" target="_blank" rel="external">babel-plugin-extract</a></p>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
-<li><a href="http://web.jobbole.com/90993/" target="_blank" rel="external">剖析Babel</a></li>
-<li><a href="https://github.com/brigand/babel-plugin-handbook/blob/master/translations/zh-Hans/README.md#asts" target="_blank" rel="external">Babel 插件开发指南</a></li>
-<li><a href="http://web.jobbole.com/91277/" target="_blank" rel="external">Babel 从零入门</a></li>
-<li><a href="https://babeljs.cn/docs/plugins/" target="_blank" rel="external">Babel plugin</a></li>
-<li><a href="http://astexplorer.net/" target="_blank" rel="external">AST 抽象语法树在线转换</a></li>
-<li><a href="https://www.npmjs.com/package/babel-types" target="_blank" rel="external">babel-types</a></li>
-</ul>
-
+        
+          <a class="article-more-a" href="/2018/03/25/编写一个简单的babel插件/#more">more >></a>
+        
       
 
       

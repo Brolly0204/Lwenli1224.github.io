@@ -8,17 +8,17 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>编写一个简单的babel插件 | Lwenli_blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="babel插件编写 编写一个模块按需加载的babel插件  当我们导入lodash中指定的工具函数时 会将整个lodash打包进来 1import &amp;#123;flattenDeep, chunk&amp;#125; from &amp;apos;lodash&amp;apos; 换成按需引入的写法 但是这样写有些麻烦 我们想由上面写法 自动分解为下面写法 所以我们就编写一个babel插件 12import flatte">
+  <meta name="description" content="babel插件编写 编写一个模块按需加载的babel插件">
 <meta name="keywords" content="JavaScript,Babel">
 <meta property="og:type" content="article">
 <meta property="og:title" content="编写一个简单的babel插件">
 <meta property="og:url" content="http://yoursite.com/2018/03/25/编写一个简单的babel插件/index.html">
 <meta property="og:site_name" content="Lwenli_blog">
-<meta property="og:description" content="babel插件编写 编写一个模块按需加载的babel插件  当我们导入lodash中指定的工具函数时 会将整个lodash打包进来 1import &amp;#123;flattenDeep, chunk&amp;#125; from &amp;apos;lodash&amp;apos; 换成按需引入的写法 但是这样写有些麻烦 我们想由上面写法 自动分解为下面写法 所以我们就编写一个babel插件 12import flatte">
-<meta property="og:updated_time" content="2018-03-30T17:16:53.035Z">
+<meta property="og:description" content="babel插件编写 编写一个模块按需加载的babel插件">
+<meta property="og:updated_time" content="2018-03-30T17:32:13.695Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="编写一个简单的babel插件">
-<meta name="twitter:description" content="babel插件编写 编写一个模块按需加载的babel插件  当我们导入lodash中指定的工具函数时 会将整个lodash打包进来 1import &amp;#123;flattenDeep, chunk&amp;#125; from &amp;apos;lodash&amp;apos; 换成按需引入的写法 但是这样写有些麻烦 我们想由上面写法 自动分解为下面写法 所以我们就编写一个babel插件 12import flatte">
+<meta name="twitter:description" content="babel插件编写 编写一个模块按需加载的babel插件">
   
     <link rel="alternative" href="/atom.xml" title="Lwenli_blog" type="application/atom+xml">
   
@@ -177,6 +177,7 @@
         <h1 id="babel插件编写"><a href="#babel插件编写" class="headerlink" title="babel插件编写"></a>babel插件编写</h1><blockquote>
 <p>编写一个模块按需加载的babel插件</p>
 </blockquote>
+<a id="more"></a>
 <p>当我们导入lodash中指定的工具函数时 会将整个lodash打包进来</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">import &#123;flattenDeep, chunk&#125; from &apos;lodash&apos;</div></pre></td></tr></table></figure>
 <p>换成按需引入的写法 但是这样写有些麻烦 我们想由上面写法 自动分解为下面写法 所以我们就编写一个babel插件</p>
