@@ -151,6 +151,332 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-webpack4.0打包优化策略整理" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/03/29/webpack4.0打包优化策略整理/">webpack4.0打包优化策略整理</a>
+    </h1>
+  
+
+        
+        <a href="/2018/03/29/webpack4.0打包优化策略整理/" class="archive-article-date">
+  	<time datetime="2018-03-28T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-29</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><a href="http://ju.outofmemory.cn/entry/343762" target="_blank" rel="external">webapck4 新特性介绍-参考资料</a></p>
+<p>当前依赖包的版本</p>
+<p><img src="https://user-gold-cdn.xitu.io/2018/3/29/1626d754b95c699d?w=816&amp;h=440&amp;f=png&amp;s=56400" alt="依赖包版本"></p>
+<h2 id="1-优化loader配置"><a href="#1-优化loader配置" class="headerlink" title="1.优化loader配置"></a>1.优化loader配置</h2><h3 id="1-1-缩小文件匹配范围-include-exclude"><a href="#1-1-缩小文件匹配范围-include-exclude" class="headerlink" title="1.1 缩小文件匹配范围(include/exclude)"></a>1.1 缩小文件匹配范围(include/exclude)</h3><blockquote>
+<p>通过排除node_modules下的文件 从而缩小了loader加载搜索范围 高概率命中文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">module: &#123;</div><div class="line">    rules: [</div><div class="line">        &#123;</div><div class="line">            test: /\.js$/,</div><div class="line">            use: &apos;babel-loader&apos;,</div><div class="line">            exclude: /node_modules/, // 排除不处理的目录</div><div class="line">            include: path.resolve(__dirname, &apos;src&apos;) // 精确指定要处理的目录</div><div class="line">        &#125;</div><div class="line">    ]</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+</blockquote>
+<h3 id="1-2-缓存loader的执行结果-cacheDirectory"><a href="#1-2-缓存loader的执行结果-cacheDirectory" class="headerlink" title="1.2 缓存loader的执行结果(cacheDirectory)"></a>1.2 缓存loader的执行结果(cacheDirectory)</h3><blockquote>
+<p>cacheDirectory是loader的一个特定的选项，默认值是false。指定的目录(use: ‘babel-loader?cacheDirectory=cacheLoader’)将用来缓存loader的执行结果，减少webpack构建时Babel重新编译过程。如果设置一个空值(use: ‘babel-loader?cacheDirectory’) 或true(use: ‘babel-loader?cacheDirectory=true’) 将使用默认的缓存目录(node_modules/.cache/babel-loader)，如果在任何根目录下都没有找到 node_modules 目录，将会降级回退到操作系统默认的临时文件目录。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">module: &#123;</div><div class="line">    rules: [</div><div class="line">        &#123;</div><div class="line">            test: /\.js$/,</div><div class="line">            use: &apos;babel-loader?cacheDirectory&apos;, // 缓存loader执行结果 发现打包速度已经明显提升了</div><div class="line">            exclude: /node_modules/,</div><div class="line">            include: path.resolve(__dirname, &apos;src&apos;)</div><div class="line">        &#125;</div><div class="line">    ]</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="2-resolve优化配置"><a href="#2-resolve优化配置" class="headerlink" title="2.resolve优化配置"></a>2.resolve优化配置</h2><h3 id="2-1-优化模块查找路径-resolve-modules"><a href="#2-1-优化模块查找路径-resolve-modules" class="headerlink" title="2.1 优化模块查找路径 resolve.modules"></a>2.1 优化模块查找路径 resolve.modules</h3><blockquote>
+<p>Webpack的resolve.modules配置模块库（即 node_modules）所在的位置，在 js 里出现  import ‘vue’ 这样不是相对、也不是绝对路径的写法时，会去 node_modules 目录下找。但是默认的配置，会采用向上递归搜索的方式去寻找，但通常项目目录里只有一个 node_modules，且是在项目根目录，为了减少搜索范围，可以直接写明 node_modules 的全路径；同样，对于别名(alias)的配置，亦当如此：</p>
+</blockquote>
+<p><img src="https://user-gold-cdn.xitu.io/2018/3/29/1626d76279b8bec9?w=236&amp;h=228&amp;f=png&amp;s=11342" alt="resolve"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">const path = require(&apos;path&apos;);</div><div class="line"></div><div class="line">function resolve(dir) &#123; // 转换为绝对路径</div><div class="line">   return path.join(__dirname, dir);</div><div class="line">&#125;</div><div class="line"></div><div class="line">resolve: &#123;</div><div class="line">    modules: [ // 优化模块查找路径</div><div class="line">        path.resolve(&apos;src&apos;),</div><div class="line">        path.resolve(&apos;node_modules&apos;) // 指定node_modules所在位置 当你import 第三方模块时 直接从这个路径下搜索寻找</div><div class="line">    ]</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>配置好src目录所在位置后，由于util目录是在src里面 所以可以用下面方式引入util中的工具函数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">// main.js</div><div class="line"></div><div class="line">import dep1 from &apos;util/dep1&apos;;</div><div class="line">import add from &apos;util/add&apos;;</div></pre></td></tr></table></figure>
+<h3 id="2-2-resolve-alias-配置路径别名"><a href="#2-2-resolve-alias-配置路径别名" class="headerlink" title="2.2 resolve.alias 配置路径别名"></a>2.2 resolve.alias 配置路径别名</h3><p></p>
+<blockquote>
+<p>创建 import 或 require 的路径别名，来确保模块引入变得更简单。配置项通过别名来把原导入路径映射成一个新的导入路径 此优化方法会影响使用Tree-Shaking去除无效代码</p>
+</blockquote>
+<p>例如，一些位于 src/ 文件夹下的常用模块：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">alias: &#123;</div><div class="line">  Utilities: path.resolve(__dirname, &apos;src/utilities/&apos;),</div><div class="line">  Templates: path.resolve(__dirname, &apos;src/templates/&apos;)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>现在，替换「在导入时使用相对路径」这种方式，就像这样：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">import Utility from &apos;../../utilities/utility&apos;;</div></pre></td></tr></table></figure>
+<p>你可以这样使用别名：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">import Utility from &apos;Utilities/utility&apos;;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">resolve: &#123;</div><div class="line">    alias: &#123; // 别名配置 通过别名配置 可以让我们引用变的简单</div><div class="line">        &apos;vue$&apos;: &apos;vue/dist/vue.common.js&apos;, // $表示精确匹配</div><div class="line">        src: resolve(&apos;src&apos;) // 当你在任何需要导入src下面的文件时可以 import moduleA from &apos;src/moduleA&apos; src会被替换为resolve(&apos;src&apos;) 返回的绝对路径 而不需要相对路径形式导入</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>也可以在给定对象的键后的末尾添加 $，以表示精准匹配：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">alias: &#123;</div><div class="line">    util$: resolve(&apos;src/util/add.js&apos;)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这将产生以下结果：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">import Test1 from &apos;util&apos;; // 精确匹配，所以 src/util/add.js 被解析和导入</div><div class="line">import Test2 from &apos;util/dep1.js&apos;; // 精确匹配，触发普通解析 util/dep1.js</div></pre></td></tr></table></figure>
+<h3 id="2-3-resolve-extensions"><a href="#2-3-resolve-extensions" class="headerlink" title="2.3 resolve.extensions"></a>2.3 resolve.extensions</h3><blockquote>
+<p>当引入模块时不带文件后缀 webpack会根据此配置自动解析确定的文件后缀</p>
+</blockquote>
+<ul>
+<li>后缀列表尽可能小</li>
+<li>频率最高的往前放</li>
+<li>导出语句尽可能带上后缀</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">resolve: &#123;</div><div class="line">    extensions: [&apos;.js&apos;, &apos;.vue&apos;]</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="3-module-noParse"><a href="#3-module-noParse" class="headerlink" title="3.module.noParse"></a>3.module.noParse</h2><blockquote>
+<p>用了noParse的模块将不会被loaders解析，所以当我们使用的库如果太大，并且其中不包含import require、define的调用，我们就可以使用这项配置来提升性能, 让 Webpack 忽略对部分没采用模块化的文件的递归解析处理。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">// 忽略对jquery lodash的进行递归解析</div><div class="line">module: &#123;</div><div class="line">    // noParse: /jquery|lodash/</div><div class="line"></div><div class="line">    // 从 webpack 3.0.0 开始</div><div class="line">    noParse: function(content) &#123;</div><div class="line">        return /jquery|lodash/.test(content)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="4-HappyPack"><a href="#4-HappyPack" class="headerlink" title="4.HappyPack"></a>4.HappyPack</h2><blockquote>
+<p>HappyPack是让webpack对loader的执行过程，从单一进程形式扩展为多进程模式，也就是将任务分解给多个子进程去并发的执行，子进程处理完后再把结果发送给主进程。从而加速代码构建 与 DLL动态链接库结合来使用更佳。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm i happypack@next -D</div></pre></td></tr></table></figure>
+<p>webpack.config.js<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">const HappyPack = require(&apos;happypack&apos;);</div><div class="line">const os = require(&apos;os&apos;); // node 提供的系统操作模块</div><div class="line"></div><div class="line"> // 根据我的系统的内核数量 指定线程池个数 也可以其他数量</div><div class="line">const happyThreadPool = HappyPack.ThreadPool(&#123;size: os.cpus().lenght&#125;)</div><div class="line"></div><div class="line">module: &#123;</div><div class="line">    rules: [</div><div class="line">       &#123;</div><div class="line">           test: /\.js$/,</div><div class="line">           use: &apos;happypack/loader?id=babel&apos;,</div><div class="line">           exclude: /node_modules/,</div><div class="line">           include: path.resolve(__dirname, &apos;src&apos;)</div><div class="line">       &#125;</div><div class="line">    ]</div><div class="line">&#125;,</div><div class="line">plugins: [</div><div class="line">    new HappyPack(&#123; // 基础参数设置</div><div class="line">        id: &apos;babel&apos;, // 上面loader?后面指定的id</div><div class="line">        loaders: [&apos;babel-loader?cacheDirectory&apos;], // 实际匹配处理的loader</div><div class="line">        threadPool: happyThreadPool,</div><div class="line">        // cache: true // 已被弃用</div><div class="line">        verbose: true</div><div class="line">    &#125;);</div><div class="line">]</div></pre></td></tr></table></figure></p>
+<p>happypack提供的loader，是对文件实际匹配的处理loader。这里happypack提供的loader与plugin的衔接匹配，则是通过id=happypack来完成。 资料:<a href="http://taobaofed.org/blog/2016/12/08/happypack-source-code-analysis/" target="_blank" rel="external">happypack原理解析-淘宝前端</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm run dev</div></pre></td></tr></table></figure>
+<h2 id="5-DLL动态链接库"><a href="#5-DLL动态链接库" class="headerlink" title="5.DLL动态链接库"></a>5.DLL动态链接库</h2><blockquote>
+<p>在一个动态链接库中可以包含其他模块调用的函数和数据，动态链接库只需被编译一次，在之后的构建过程中被动态链接库包含的模块将不会被重新编译,而是直接使用动态链接库中的代码。</p>
+</blockquote>
+<ul>
+<li>将web应用依赖的基础模块抽离出来，打包到单独的动态链接库中。一个链接库可以包含多个模块。</li>
+<li>当需要导入的模块存在于动态链接库，模块不会再次打包，而是去动态链接库中去获取。</li>
+<li>页面依赖的所有动态链接库都需要被加载。</li>
+</ul>
+<p>5.1 定义DLL配置</p>
+<blockquote>
+<p>依赖的两个内置插件：DllPlugin 和 DllReferencePlugin</p>
+</blockquote>
+<p>5.1.1 创建一个DLL配置文件webpack_dll.config.js</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">module.exports = &#123;</div><div class="line">    entry: &#123;</div><div class="line">        react: [&apos;react&apos;, &apos;react-dom&apos;]</div><div class="line">    &#125;,</div><div class="line">    output: &#123;</div><div class="line">        filename: &apos;[name].dll.js&apos;, // 动态链接库输出的文件名称</div><div class="line">        path: path.join(__dirname, &apos;dist&apos;), // 动态链接库输出路径</div><div class="line">        libraryTarget: &apos;var&apos;, // 链接库(react.dll.js)输出方式 默认&apos;var&apos;形式赋给变量 b</div><div class="line">        library: &apos;_dll_[name]_[hash]&apos; // 全局变量名称 导出库将被以var的形式赋给这个全局变量 通过这个变量获取到里面模块</div><div class="line">    &#125;,</div><div class="line">    plugins: [</div><div class="line">        new webpack.DllPlugin(&#123;</div><div class="line">            // path 指定manifest文件的输出路径</div><div class="line">            path: path.join(__dirname, &apos;dist&apos;, &apos;[name].manifest.json&apos;),</div><div class="line">            name: &apos;_dll_[name]_[hash]&apos;, // 和library 一致，输出的manifest.json中的name值</div><div class="line">        &#125;)</div><div class="line">    ]</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>5.1.2 output.libraryTarget<br>规定了以哪一种导出你的库  默认以全局变量形式 浏览器支持的形式</p>
+<p><img src="https://user-gold-cdn.xitu.io/2018/3/29/1626d770b842e3c6?w=1132&amp;h=324&amp;f=png&amp;s=73488" alt="libraryTarget"></p>
+<p>具体包括如下：</p>
+<ul>
+<li><p>“var” - 以直接变量输出(默认library方式) var Library = xxx (default)</p>
+</li>
+<li><p>“this” - 通过设置this的属性输出 this[“Library”] = xxx</p>
+</li>
+<li><p>“commonjs” - 通过设置exports的属性输出 exports[“Library”] = xxx</p>
+</li>
+<li><p>“commonjs2” - 通过设置module.exports的属性输出 module.exports = xxx</p>
+</li>
+<li><p>“amd” - 以amd方式输出</p>
+</li>
+<li><p>“umd” - 结合commonjs2/amd/root</p>
+</li>
+</ul>
+<p>5.1.3 打包生成动态链接库</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">webpack --config webpack_dll.config.js --mode production</div></pre></td></tr></table></figure>
+<p><img src="https://user-gold-cdn.xitu.io/2018/3/29/1626d77902701b54?w=464&amp;h=228&amp;f=png&amp;s=18157" alt="DLL动态链接库"><br>在dist目录下 多出react.dll.js 和 react.manifest.json</p>
+<ul>
+<li>react.dll.js 动态链接库 里面包含了 react和react-dom的内容</li>
+<li>react.manifest.json 描述链接库(react.dll)中的信息</li>
+</ul>
+<p>5.2 在主配置文件中使用动态链接库文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">// webpack.config.js</div><div class="line"></div><div class="line">const webpack = require(&apos;webpack&apos;);</div><div class="line"></div><div class="line">plugins: [</div><div class="line">    // 当我们需要使用动态链接库时 首先会找到manifest文件 得到name值记录的全局变量名称 然后找到动态链接库文件 进行加载</div><div class="line">    new webpack.DllReferencePlugin(&#123;</div><div class="line">       manifest: require(&apos;./dist/react.manifest.json&apos;)</div><div class="line">    &#125;)</div><div class="line">]</div></pre></td></tr></table></figure>
+<p>5.3 将动态链接库文件加载到页面中</p>
+<p>需要借助两个webpack插件</p>
+<ul>
+<li>html-webpack-plugin 产出html文件</li>
+<li>html-webpack-include-assets-plugin 将js css资源添加到html中 扩展html插件的功能</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm i html-webpack-plugin html-webpack-include-assets-plugin -D</div></pre></td></tr></table></figure>
+<p>配置webpack.config.js<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">const webpack = require(&apos;webpack&apos;);</div><div class="line">const HtmlWebpackPlugin = require(&apos;html-webpack-plugin&apos;);</div><div class="line">const HtmlIncludeAssetsPlugin = require(&apos;html-webpack-include-assets-plugin&apos;);</div><div class="line"></div><div class="line">pluings: [</div><div class="line">    new webpack.DllReferencePlugin(&#123;</div><div class="line">       manifest: require(&apos;./dist/react.manifest.json&apos;)</div><div class="line">    &#125;),</div><div class="line">    new HtmlWebpackPlugin(&#123;</div><div class="line">       template: path.join(__dirname, &apos;src/index.html&apos;)</div><div class="line">    &#125;),</div><div class="line">    new HtmlIncludeAssetsPlugin(&#123;</div><div class="line">        assets: [&apos;./react.dll.js&apos;], // 添加的资源相对html的路径</div><div class="line">        append: false // false 在其他资源的之前添加 true 在其他资源之后添加</div><div class="line">    &#125;);</div><div class="line">]</div></pre></td></tr></table></figure></p>
+<p>此时react.dll.js和main.js被自动引入到页面中，并且dll文件在main.js之前加载</p>
+<p><img src="https://user-gold-cdn.xitu.io/2018/3/29/1626d7901122aa6f?w=1220&amp;h=226&amp;f=png&amp;s=48366" alt="加载dll"></p>
+<h2 id="6-ParallelUglifyPlugin"><a href="#6-ParallelUglifyPlugin" class="headerlink" title="6.ParallelUglifyPlugin"></a>6.ParallelUglifyPlugin</h2><blockquote>
+<p>这个插件可以帮助有很多入口点的项目加快构建速度。把对JS文件的串行压缩变为开启多个子进程并行进行uglify。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">cnpm i webpack-parallel-uglify-plugin -D</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">// webpck.config.js</div><div class="line"></div><div class="line">const ParallelUglifyPlugin = require(&apos;webpack-parallel-uglify-plugin&apos;);</div><div class="line"></div><div class="line">plugins: [</div><div class="line">    new ParallelUglifyPlugin(&#123;</div><div class="line">        workerCount: 4,</div><div class="line">        uglifyJS: &#123;</div><div class="line">            output: &#123;</div><div class="line">                beautify: false, // 不需要格式化</div><div class="line">                comments: false // 保留注释</div><div class="line">            &#125;,</div><div class="line">            compress: &#123; // 压缩</div><div class="line">                warnings: false, // 删除无用代码时不输出警告</div><div class="line">                drop_console: true, // 删除console语句</div><div class="line">                collapse_vars: true, // 内嵌定义了但是只有用到一次的变量</div><div class="line">                reduce_vars: true // 提取出出现多次但是没有定义成变量去引用的静态值</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;);</div><div class="line">]</div></pre></td></tr></table></figure>
+<p>执行压缩<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">webpack --mode production</div></pre></td></tr></table></figure></p>
+<h2 id="7-Tree-Shaking"><a href="#7-Tree-Shaking" class="headerlink" title="7.Tree Shaking"></a>7.Tree Shaking</h2><blockquote>
+<p>剔除JavaScript中用不上的代码。它依赖静态的ES6模块化语法，例如通过impot和export导入导出</p>
+</blockquote>
+<h3 id="commonJS模块-与-es6模块的区别"><a href="#commonJS模块-与-es6模块的区别" class="headerlink" title="commonJS模块 与 es6模块的区别"></a>commonJS模块 与 es6模块的区别</h3><p>commonJS模块：</p>
+<ul>
+<li><p>1.动态加载模块<br>commonJS 是运行时加载 能够轻松实现懒加载，优化用户体验</p>
+</li>
+<li><p>2.加载整个模块<br>commonJS模块中，导出的是整个模块</p>
+</li>
+<li><p>3.每个模块皆为对象<br>commonJS模块被视作一个对象</p>
+</li>
+<li><p>4.值拷贝<br>commonJS的模块输出和函数的值传递相似，都是值得拷贝</p>
+</li>
+</ul>
+<p>es6模块</p>
+<ul>
+<li><p>1.静态解析<br>es6模块时 编译时加载 即在解析阶段就确定输出的模块的依赖关系，所以es6模块的import一般写在被引入文件的开头</p>
+</li>
+<li><p>2.模块不是对象<br>在es6里，每个模块并不会当做一个对象看待</p>
+</li>
+<li><p>3.加载的不是整个模块<br>在es6模块中 一个模块中有好几个export导出</p>
+</li>
+<li><p>4.模块的引用<br>es6模块中，导出的并不是模块的值得拷贝，而是这个模块的引用</p>
+</li>
+</ul>
+<p>7.1 保留ES6模块化语法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">// .babelrc</div><div class="line"></div><div class="line">&#123;</div><div class="line">    &quot;presets&quot;: [</div><div class="line">        [</div><div class="line">           &quot;env&quot;, &#123;</div><div class="line">               modules: false // 不要编译ES6模块</div><div class="line">           &#125;,</div><div class="line">           &quot;react&quot;,</div><div class="line">           &quot;stage-0&quot;</div><div class="line">        ]</div><div class="line">    ]</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>7.2 执行生产编译 默认已开启Tree Shaking</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">webpack --mode production</div></pre></td></tr></table></figure>
+<h3 id="什么是Tree-Shaking"><a href="#什么是Tree-Shaking" class="headerlink" title="什么是Tree Shaking?"></a>什么是Tree Shaking?</h3><p>有个funs.js 里面有两个函数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">// funs.js</div><div class="line">export const sub = () =&gt; &apos;hello webpack!&apos;;</div><div class="line">export const mul = () =&gt; &apos;hello shaking!&apos;;</div></pre></td></tr></table></figure>
+<p>main.js 中依赖funs.js</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">// main.js</div><div class="line">import &#123;sub&#125; from &apos;./funs.js&apos;</div><div class="line"></div><div class="line">sub();</div></pre></td></tr></table></figure>
+<p>在main.js只使用了里面的 sub函数 默认情况下也会将funs.js里面其他没有的函数也打包进来, 如果开启tree shaking 生产编译时</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">webpack --mode production  //此时funs.js中没有被用到的代码并没打包进来 而被剔除出去了</div></pre></td></tr></table></figure>
+<h2 id="区分环境"><a href="#区分环境" class="headerlink" title="区分环境"></a>区分环境</h2><p>未完待续…</p>
+<h2 id="提取公共代"><a href="#提取公共代" class="headerlink" title="提取公共代"></a>提取公共代</h2><p>未完待续…</p>
+<h2 id="代码分离"><a href="#代码分离" class="headerlink" title="代码分离"></a>代码分离</h2><p>未完待续…</p>
+<h2 id="开启Scope-Hoisting"><a href="#开启Scope-Hoisting" class="headerlink" title="开启Scope Hoisting"></a>开启Scope Hoisting</h2><p>未完待续…</p>
+<h2 id="源码参考"><a href="#源码参考" class="headerlink" title="源码参考"></a>源码参考</h2><p><a href="https://github.com/Lwenli1224/webapck-opt.git" target="_blank" rel="external">GitHub源码</a></p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://www.imooc.com/article/10969" target="_blank" rel="external">webpack常用配置拆分</a></li>
+</ul>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">webpack4.0</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">JavaScript</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/03/29/webpack4.0打包优化策略整理/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-编写一个简单的babel插件" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/03/25/编写一个简单的babel插件/">编写一个简单的babel插件</a>
+    </h1>
+  
+
+        
+        <a href="/2018/03/25/编写一个简单的babel插件/" class="archive-article-date">
+  	<time datetime="2018-03-24T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-25</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="babel插件编写"><a href="#babel插件编写" class="headerlink" title="babel插件编写"></a>babel插件编写</h1><blockquote>
+<p>编写一个模块按需加载的babel插件</p>
+</blockquote>
+<p>当我们导入lodash中指定的工具函数时 会将整个lodash打包进来</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">import &#123;flattenDeep, chunk&#125; from &apos;lodash&apos;</div></pre></td></tr></table></figure>
+<p>换成按需引入的写法 但是这样写有些麻烦 我们想由上面写法 自动分解为下面写法 所以我们就编写一个babel插件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">import flattenDeep from &apos;lodash/flattenDeep&apos;</div><div class="line">import chunk from &apos;lodash/chunk&apos;</div></pre></td></tr></table></figure>
+<h2 id="Install-package"><a href="#Install-package" class="headerlink" title="Install package"></a>Install package</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">npm i babel-core -D</div><div class="line">npm i babel-types -D</div></pre></td></tr></table></figure>
+<h2 id="插件编写"><a href="#插件编写" class="headerlink" title="插件编写"></a>插件编写</h2><p>在当前工程的node_modules下创建一个babel-plugin-extract目录 里面创建index.js</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">const babel = require(&apos;babel-core&apos;);</div><div class="line">const types = require(&apos;babel-types&apos;);</div><div class="line"></div><div class="line">// 将import &#123;flattenDeep, chunk&#125; from &apos;lodash&apos; 转化为下面这种写法:</div><div class="line">// import flattenDeep from &apos;lodash/flattenDepp&apos;</div><div class="line">// import chunk from &apos;lodash/chunk&apos;</div><div class="line"></div><div class="line">// Babel将源码转换AST之后，通过遍历AST树（其实就是一个js对象），对树做一些修改，然后再将AST转成code，即成源码。</div><div class="line">let visitor = &#123;</div><div class="line">    // import 语句解析时触发该函数</div><div class="line">    ImportDeclaration(path, ref = &#123;opts: &#123;&#125;&#125;) &#123;  //path 语句抽象语法树 opts 插件参数</div><div class="line">        let node = path.node;</div><div class="line">        let &#123;specifiers&#125; = node; // 导入的包的说明符 是个数组集合</div><div class="line">        // 确认导入库 是否是 .babelrc library属性指定库 以及 如果不是默认导入 才进行按需导入加载</div><div class="line">        if (ref.opts.library === node.source.value &amp;&amp; !types.isImportDefaultSpecifier(specifiers[0])) &#123;</div><div class="line">            let newImports = specifiers.map(specifier =&gt; ( // 遍历 出导入的每个包的说明描述符</div><div class="line">                types.importDeclaration([types.importDefaultSpecifier(specifier.local)],</div><div class="line">                // 生成import语句如 import chunk from &apos;lodash/chunk&apos;</div><div class="line">                types.stringLiteral(`$&#123;node.source.value&#125;/$&#123;specifier.local.name&#125;`))</div><div class="line">            ));</div><div class="line"></div><div class="line">            // 将原有语句写法替换掉 新写法</div><div class="line">           path.replaceWithMultiple(newImports);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">module.exports = function(babel) &#123; // 将插件导出</div><div class="line">    return &#123;visitor&#125; // 属性名固定为visitor（访问者）</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<h2 id="配置-babelrc"><a href="#配置-babelrc" class="headerlink" title="配置.babelrc"></a>配置.babelrc</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    &quot;presets&quot;: [</div><div class="line">        &quot;env&quot;,</div><div class="line">        &quot;stage-0&quot;</div><div class="line">    ],</div><div class="line">    &quot;plugins&quot;: [</div><div class="line">        [</div><div class="line">            &quot;extract&quot;, // 配置插件</div><div class="line">            &#123;</div><div class="line">                &quot;library&quot;: &quot;lodash&quot; // 指定处理的库</div><div class="line">            &#125;</div><div class="line">        ]</div><div class="line">    ]</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="build"><a href="#build" class="headerlink" title="build"></a>build</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm run build // 此时编译后的bundle.js变小了</div></pre></td></tr></table></figure>
+<h2 id="源码地址"><a href="#源码地址" class="headerlink" title="源码地址"></a>源码地址</h2><p>先npm install 然后将源码目录中babel-plugin-extract目录 挪到 node_modules下，npm run build<br><a href="https://github.com/Lwenli1224/babel-plugin-extract" target="_blank" rel="external">babel-plugin-extract</a></p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="http://web.jobbole.com/90993/" target="_blank" rel="external">剖析Babel</a></li>
+<li><a href="https://github.com/brigand/babel-plugin-handbook/blob/master/translations/zh-Hans/README.md#asts" target="_blank" rel="external">Babel 插件开发指南</a></li>
+<li><a href="http://web.jobbole.com/91277/" target="_blank" rel="external">Babel 从零入门</a></li>
+<li><a href="https://babeljs.cn/docs/plugins/" target="_blank" rel="external">Babel plugin</a></li>
+<li><a href="http://astexplorer.net/" target="_blank" rel="external">AST 抽象语法树在线转换</a></li>
+<li><a href="https://www.npmjs.com/package/babel-types" target="_blank" rel="external">babel-types</a></li>
+</ul>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">JavaScript</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Babel</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/03/25/编写一个简单的babel插件/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Express源码学习-路由篇" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -207,6 +533,162 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2018/03/23/Express源码学习-路由篇/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-几道JS代码手写题以及JavaScript数据结构与算法资源分享" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/03/13/几道JS代码手写题以及JavaScript数据结构与算法资源分享/">几道JS代码手写题以及JavaScript数据结构与算法资源分享</a>
+    </h1>
+  
+
+        
+        <a href="/2018/03/13/几道JS代码手写题以及JavaScript数据结构与算法资源分享/" class="archive-article-date">
+  	<time datetime="2018-03-12T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-13</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="Github-代码实现案例"><a href="#Github-代码实现案例" class="headerlink" title="Github 代码实现案例"></a>Github 代码实现案例</h2><ul>
+<li><a href="https://github.com/Lwenli1224/BinarySearchTree" target="_blank" rel="external">二叉搜索树 中序、先序、后序遍历 搜索树中的值</a></li>
+<li><a href="https://github.com/Lwenli1224/mvvm-lwl" target="_blank" rel="external">vue设计原理简单实现:数据劫持、依赖收集、模板编译、双向绑定、计算属性</a></li>
+<li><a href="https://github.com/Lwenli1224/spa_router" target="_blank" rel="external">spa单页路由设计简单实现</a></li>
+<li><a href="https://github.com/Lwenli1224/browser_cache" target="_blank" rel="external">浏览器缓存交互实现</a></li>
+<li><a href="https://github.com/Lwenli1224/li-server" target="_blank" rel="external">npm发布li-server静态服务器编写</a></li>
+<li><a href="https://lwenli1224.github.io/2017/04/22/node-events%E4%BA%8B%E4%BB%B6%E8%A7%A6%E5%8F%91%E5%99%A8/#more" target="_blank" rel="external">node events模块实现 发布订阅</a></li>
+</ul>
+<h2 id="JavaScript数据结构与算法pdf资源"><a href="#JavaScript数据结构与算法pdf资源" class="headerlink" title="JavaScript数据结构与算法pdf资源"></a>JavaScript数据结构与算法pdf资源</h2><p><a href="https://pan.baidu.com/s/1i6gfFK2BjHjXqEg7OUKsmg" target="_blank" rel="external">百度网盘</a><br>密码:ll8d</p>
+<p>如果不喜欢看pdf可以看下面在网上发现一个博客讲解</p>
+<p><a href="http://huang303513.github.io/" target="_blank" rel="external">数据结构与算法讲解</a></p>
+<h2 id="高阶函数实现AOP（面向切面编程）"><a href="#高阶函数实现AOP（面向切面编程）" class="headerlink" title="高阶函数实现AOP（面向切面编程）"></a>高阶函数实现AOP（面向切面编程）</h2><p><a href="https://www.zhihu.com/question/24863332" target="_blank" rel="external">什么是面向切面编程?</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">Function.prototype.before = function (beforefn) &#123;</div><div class="line">    let _self = this; // 缓存原函数的引用</div><div class="line">    return function () &#123; // 代理函数</div><div class="line">        beforefn.apply(this, arguments); // 执行前置函数</div><div class="line">        return _self.apply(this, arguments); // 执行原函数</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">Function.prototype.after = function (afterfn) &#123;</div><div class="line">    let _self = this;</div><div class="line">    return function () &#123;</div><div class="line">        let set = _self.apply(this, arguments);</div><div class="line">        afterfn.apply(this, arguments);</div><div class="line">        return set;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">let func = () =&gt; console.log(&apos;func&apos;);</div><div class="line">func = func.before(() =&gt; &#123;</div><div class="line">    console.log(&apos;===before===&apos;);</div><div class="line">&#125;).after(() =&gt; &#123;</div><div class="line">    console.log(&apos;===after===&apos;);</div><div class="line">&#125;);</div><div class="line"></div><div class="line">func();</div></pre></td></tr></table></figure>
+<p>输出结果：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">===before===</div><div class="line">func</div><div class="line">===after===</div></pre></td></tr></table></figure>
+<h2 id="当我们-new-一个类的时候-都发生了什么"><a href="#当我们-new-一个类的时候-都发生了什么" class="headerlink" title="当我们 new 一个类的时候 都发生了什么"></a>当我们 new 一个类的时候 都发生了什么</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line"> * new2 new关键字的代码实现演示</div><div class="line"> * @param &#123;function&#125; func 被new的类 (构造函数)</div><div class="line"> */</div><div class="line">function new2(func) &#123;</div><div class="line">    // 创建了一个实例对象 o，并且这个对象__proto__指向func这个类的原型对象 </div><div class="line">    let o = Object.create(func.prototype); </div><div class="line">    // (在构造函数中this指向当前实例)让这个类作为普通函数值行 并且里面this为实例对象 </div><div class="line">    let k = func.call(o);</div><div class="line">    // 最后再将实例对象返回 如果你在类中显示指定返回值k，</div><div class="line">    // 注意如果返回的是引用类型则将默认返回的实例对象o替代掉</div><div class="line">    return typeof k === &apos;object&apos; ? k : o;</div><div class="line">&#125;</div><div class="line"></div><div class="line">// 实验</div><div class="line">function M() &#123; // 即将被new的类</div><div class="line">    this.name = &apos;liwenli&apos;;</div><div class="line">&#125;</div><div class="line"></div><div class="line">let m = new2(M); // 等价于 new M 这里只是模拟</div><div class="line">console.log(m instanceof M); // instanceof 检测实例</div><div class="line">console.log(m instanceof Object);</div><div class="line">console.log(m.__proto__.constructor === M);</div></pre></td></tr></table></figure>
+<h2 id="Object-create-兼容实现"><a href="#Object-create-兼容实现" class="headerlink" title="Object.create 兼容实现"></a>Object.create 兼容实现</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">let obj1 = &#123;id: 1&#125;;</div><div class="line">Object._create = (o) =&gt; &#123;</div><div class="line">    let Fn = function() &#123;&#125;; // 临时的构造函数</div><div class="line">    Fn.prototype = o;</div><div class="line">    return new Fn;</div><div class="line">&#125;</div><div class="line"></div><div class="line">let obj2 = Object._create(obj1);</div><div class="line">console.log(obj2.__proto__ === obj1); // true</div><div class="line">console.log(obj2.id); // 1</div><div class="line"></div><div class="line">// 原生的Object.create</div><div class="line">let obj3 = Object.create(obj1);</div><div class="line">console.log(obj3.__proto__ === obj1); // true</div><div class="line">console.log(obj3.id); // 1</div></pre></td></tr></table></figure>
+<h2 id="一道面试题"><a href="#一道面试题" class="headerlink" title="一道面试题"></a>一道面试题</h2><p><img src="https://user-gold-cdn.xitu.io/2018/3/21/162468732563a3da?w=751&amp;h=1334&amp;f=jpeg&amp;s=46440" alt=""></p>
+<h3 id="解法一"><a href="#解法一" class="headerlink" title="解法一"></a>解法一</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line">function CodingMan(name) &#123; // 主要考察的是 面向对象以及JS运行机制（同步 异步 任务队列 事件循环）</div><div class="line">	function Man(name) &#123;</div><div class="line">		setTimeout(() =&gt; &#123; // 异步</div><div class="line">			console.log(`Hi! This is $&#123;name&#125;`);</div><div class="line">		&#125;, 0);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	Man.prototype.sleep = function(time) &#123;</div><div class="line">		let curTime = new Date();</div><div class="line">		let delay = time * 1000;</div><div class="line">		setTimeout(() =&gt; &#123; // 异步</div><div class="line">			while (new Date() - curTime &lt; delay) &#123;&#125; // 阻塞当前主线程</div><div class="line">			console.log(`Wake up after $&#123;time&#125;`);</div><div class="line">		&#125;, 0);</div><div class="line">		return this;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	Man.prototype.sleepFirst = function(time) &#123;</div><div class="line">		let curTime = new Date();</div><div class="line">		let delay = time * 1000;</div><div class="line">		while (new Date() - curTime &lt; delay) &#123;&#125; // 阻塞当前主线程</div><div class="line">		console.log(`Wake up after $&#123;time&#125;`);</div><div class="line">		return this;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	Man.prototype.eat = function(food) &#123;</div><div class="line">		setTimeout(() =&gt; &#123; // 异步</div><div class="line">			console.log(`Eat $&#123;food&#125;~~`);</div><div class="line">		&#125;, 0)</div><div class="line">		return this;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	return new Man(name);</div><div class="line">&#125;</div><div class="line"></div><div class="line">// CodingMan(&apos;Peter&apos;);</div><div class="line">// CodingMan(&apos;Peter&apos;).sleep(3).eat(&apos;dinner&apos;);</div><div class="line">// CodingMan(&apos;Peter&apos;).eat(&apos;dinner&apos;).eat(&apos;supper&apos;);</div><div class="line">// CodingMan(&apos;Peter&apos;).sleepFirst(5).eat(&apos;supper&apos;);</div></pre></td></tr></table></figure>
+<h3 id="解法二"><a href="#解法二" class="headerlink" title="解法二"></a>解法二</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div></pre></td><td class="code"><pre><div class="line">function CodingMan(name) &#123;</div><div class="line">    function fe() &#123;</div><div class="line">        fe.flag = true;</div><div class="line">        console.log(`Hi! This is $&#123;name&#125;`);</div><div class="line">    &#125;</div><div class="line">    fe.flag = false;</div><div class="line">    fe.timer = setTimeout(() =&gt; &#123;</div><div class="line">        clearTimeout(fe.timer);</div><div class="line">        if (!fe.flag) fe();</div><div class="line">    &#125;, 0);</div><div class="line">    return fe;</div><div class="line">&#125;</div><div class="line"></div><div class="line">Function.prototype.sleep = function (delay) &#123;</div><div class="line">    this()</div><div class="line">    this.await(delay);</div><div class="line">    return this;</div><div class="line">&#125;</div><div class="line"></div><div class="line">Function.prototype.sleepFirst = function (delay) &#123;</div><div class="line">    this.await(delay);</div><div class="line">    this();</div><div class="line">    return this;</div><div class="line">&#125;</div><div class="line"></div><div class="line">Function.prototype.eat = function (dinner) &#123;</div><div class="line">    setTimeout(() =&gt; &#123;</div><div class="line">        console.log(`Eat $&#123;dinner&#125;~`);</div><div class="line">    &#125;);</div><div class="line">    return this;</div><div class="line">&#125;;</div><div class="line"></div><div class="line">Function.prototype.await = function (delay) &#123;</div><div class="line">    delay = isNaN(delay) ? 0 : delay;</div><div class="line">    let startTime = new Date();</div><div class="line">    let delayTime = delay * 1000;</div><div class="line">    while (new Date() - startTime &lt;= delayTime) &#123;</div><div class="line">    &#125;</div><div class="line">    console.log(`Wake up after $&#123;delayTime&#125;ms`);</div><div class="line">&#125;</div><div class="line"> // CodingMan(&apos;peter&apos;)</div><div class="line"> // CodingMan(&apos;peter&apos;).sleep(2).eat(&apos;hanbao&apos;);</div><div class="line"> // CodingMan(&apos;peter&apos;).sleepFirst(2).eat(&apos;hanbao&apos;);</div><div class="line"> CodingMan(&apos;peter&apos;).eat(&apos;haha&apos;).eat(&apos;hanbao&apos;);</div></pre></td></tr></table></figure>
+<h2 id="currying-函数柯理化"><a href="#currying-函数柯理化" class="headerlink" title="currying 函数柯理化"></a>currying 函数柯理化</h2><h3 id="curry-柯理化的实现（递归调用-valueOf）"><a href="#curry-柯理化的实现（递归调用-valueOf）" class="headerlink" title="curry 柯理化的实现（递归调用 + valueOf）"></a>curry 柯理化的实现（递归调用 + valueOf）</h3><blockquote>
+<p>知识点：valueOf 浏览器环境下 当我们以log(fn)这种形式取值时，会隐式调用fn自身的valueOf 所以得到的是valueOf的返回值<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">function fn() &#123;&#125;;</div><div class="line">fn.valueOf = () =&gt; console.log(&apos;valueof&apos;);</div><div class="line">console.log(fn); // valueof</div></pre></td></tr></table></figure></p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">const mul = x =&gt; &#123;</div><div class="line">    const result = y =&gt; mul(x * y); // 递归调用mul</div><div class="line">    result.valueOf = () =&gt; x;</div><div class="line">    return result;</div><div class="line">&#125;</div><div class="line">console.log(mul(2)(3)); // 6</div><div class="line"></div><div class="line">// 在上面mul每执行一次,就会返回一个valueOf被改写后的新函数result 并且result执行会在里面调用mul(x * y)</div><div class="line">// 在result函数的valueOf里保存着 由上一次x * y 传进来的结果x, 也就是上一次x*y 会作为这一次的输出 依然叫x</div><div class="line"></div><div class="line">// 第一次mul(2) 此时 x为2  return result</div><div class="line">result 为 result = y =&gt; mul(2 * y); </div><div class="line">// 第二次 mul(2)(3) 等价于 第一个mul返回的result(3), result执行 =&gt; mul(2 * 3) 再次调用mul 将2*3 = 6 的结果作为mul参数</div><div class="line">// 最后mul(6) x = 6 在返回一个新函数result 此时result的valueOf = () =&gt; 6</div><div class="line"></div><div class="line">// log(mul(2)(3)) 相当于log的最后返回的result 隐式调用valueOf 返回 6</div></pre></td></tr></table></figure>
+<h3 id="curry-将多参数函数转换为接收单一参数的函数"><a href="#curry-将多参数函数转换为接收单一参数的函数" class="headerlink" title="curry 将多参数函数转换为接收单一参数的函数"></a>curry 将多参数函数转换为接收单一参数的函数</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">function fe(a, b, c) &#123;</div><div class="line">    return a + b + c;</div><div class="line">&#125;</div><div class="line"></div><div class="line">function curry(fe) &#123;</div><div class="line">    let args = []; // 参数集合</div><div class="line">    let len = args.length;</div><div class="line">    return function bar() &#123;</div><div class="line">        args = [...args, ...arguments]; // 收集参数</div><div class="line">        if (args.length &gt;= fe.length) &#123;</div><div class="line">            return fe.apply(this, args);</div><div class="line">        &#125;</div><div class="line">        return bar;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">console.log(curry(fe)(1)(2)(3)); // 6</div></pre></td></tr></table></figure>
+<h3 id="currying-部分求值"><a href="#currying-部分求值" class="headerlink" title="currying 部分求值"></a>currying 部分求值</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">// currying 函数柯理化</div><div class="line">let currying = function(fn) &#123;</div><div class="line">    let args = [];</div><div class="line">    return function fe() &#123;</div><div class="line">        if (arguments.length === 0) &#123;</div><div class="line">            return fn.apply(this, args);</div><div class="line">        &#125;</div><div class="line">        [].push.apply(args, arguments);</div><div class="line">        return fe;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">let count = currying(function (...rest) &#123;</div><div class="line">    return rest.reduce((prev, cur) =&gt; prev + cur, 0);</div><div class="line">&#125;);</div><div class="line"></div><div class="line">console.log(count(100)(200)(10)()); // 310</div></pre></td></tr></table></figure>
+<h3 id="收集参数-延迟执行-到达指定次数才执行"><a href="#收集参数-延迟执行-到达指定次数才执行" class="headerlink" title="收集参数 延迟执行 到达指定次数才执行"></a>收集参数 延迟执行 到达指定次数才执行</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">// 参数收集 指定次数后执行</div><div class="line">     function fn(...rest) &#123;console.log(rest);&#125;;</div><div class="line">     function after(fn, time = 1) &#123;</div><div class="line">         let params = [];</div><div class="line">         return function(...rest) &#123;</div><div class="line">             params = [...params, ...rest];</div><div class="line">             if (--time === 0) &#123;</div><div class="line">                 fn.apply(this, params);</div><div class="line">             &#125;</div><div class="line">         &#125;</div><div class="line">     &#125;</div><div class="line">     let newFn = after(fn, 3); // 执行3次 内部fn才会执行</div><div class="line">     newFn(2);</div><div class="line">     newFn(3);</div><div class="line">     newFn(4);</div></pre></td></tr></table></figure>
+<h2 id="函数节流"><a href="#函数节流" class="headerlink" title="函数节流"></a>函数节流</h2><blockquote>
+<p>throttle 策略的电梯。保证如果电梯第一个人进来后，50毫秒后准时运送一次，不等待。如果没有人，则待机。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">let throttle = (fn, delay = 50) =&gt; &#123; // 节流 控制执行间隔时间 防止频繁触发 scroll resize mousemove</div><div class="line">    let stattime = 0;</div><div class="line">    return function (...args) &#123;</div><div class="line">        let curTime = new Date();</div><div class="line">        if (curTime - stattime &gt;= delay) &#123;</div><div class="line">            fn.apply(this, args);</div><div class="line">            stattime = curTime;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="防抖动"><a href="#防抖动" class="headerlink" title="防抖动"></a>防抖动</h2><blockquote>
+<p>debounce 策略的电梯。如果电梯里有人进来，等待50毫秒。如果又人进来，50毫秒等待重新计时，直到50毫秒超时，开始运送。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">let debounce = (fn, time = 50) =&gt; &#123; // 防抖动 控制空闲时间 用户输入频繁</div><div class="line">         let timer;</div><div class="line">         return function (...args) &#123;</div><div class="line">             let that = this;</div><div class="line">             clearTimeout(timer);</div><div class="line">             timer = setTimeout(fn.bind(that, ...args), time);</div><div class="line">         &#125;</div><div class="line">     &#125;</div></pre></td></tr></table></figure>
+<h2 id="深度拷贝兼容写法（不包括原型属性）"><a href="#深度拷贝兼容写法（不包括原型属性）" class="headerlink" title="深度拷贝兼容写法（不包括原型属性）"></a>深度拷贝兼容写法（不包括原型属性）</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">function deepCopy(obj) &#123;</div><div class="line">    if (typeof obj !== &apos;object&apos;) return obj;</div><div class="line">    if (typeof window !== &apos;undefined&apos; &amp;&amp; window.JSON) &#123; // 浏览器环境下 并支持window.JSON 则使用 JSON</div><div class="line">        return JSON.parse(JSON.stringify(obj));</div><div class="line">    &#125; else &#123;</div><div class="line">        let newObj = obj.constructor === Array ? [] : &#123;&#125;;</div><div class="line">        for(let key in obj) &#123;</div><div class="line">            newObj[key] = typeof obj[key] === &apos;object&apos; ? deepCopy(obj[key]) : obj[key];</div><div class="line">        &#125;</div><div class="line">        return newObj;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">let obj = &#123;a: 1, b: [12]&#125;;</div><div class="line">let newObj = deepCopy(obj);</div><div class="line">newObj.b[1] = 100;</div><div class="line">console.log(obj);</div><div class="line">console.log(newObj);</div></pre></td></tr></table></figure>
+<h2 id="Function的bind实现"><a href="#Function的bind实现" class="headerlink" title="Function的bind实现"></a>Function的bind实现</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">Function.prototype._bind = function(context) &#123;</div><div class="line">    let func = this;</div><div class="line">    let params = [].slice.call(arguments, 1);</div><div class="line">    return function() &#123;</div><div class="line">        params = params.concat([].slice.call(arguments, 0));</div><div class="line">        func.apply(context, params);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">let obj = &#123;id: 24&#125;</div><div class="line"></div><div class="line">function fn1(a) &#123;</div><div class="line">    console.log(this, arguments);</div><div class="line">&#125;</div><div class="line">let foo = fn1._bind(obj, obj.id);</div></pre></td></tr></table></figure>
+<h2 id="函数组合串联compose（koa-reduce中间件）"><a href="#函数组合串联compose（koa-reduce中间件）" class="headerlink" title="函数组合串联compose（koa reduce中间件）"></a>函数组合串联compose（koa reduce中间件）</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">// 组合串联</div><div class="line">let fn1 = (a) =&gt; a + 1;</div><div class="line">let fn2 = (b) =&gt; b + 2;</div><div class="line">let fn3 = (c) =&gt; c + 3;</div><div class="line"></div><div class="line">let funs = [fn1, fn2, fn3];</div><div class="line"></div><div class="line">let compose = (func) =&gt; &#123;</div><div class="line">    return arg =&gt; func.reduceRight((composed, fn) =&gt; fn(composed), arg);</div><div class="line">&#125;</div><div class="line">console.log(compose(funs)(100)); // 相当于fn1(fn2(fn3(100)))</div></pre></td></tr></table></figure>
+<h2 id="co函数"><a href="#co函数" class="headerlink" title="co函数"></a>co函数</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">function* fn(a) &#123;</div><div class="line">  a = yield a;</div><div class="line">  let b = yield 2;</div><div class="line">  let c = yield 3;</div><div class="line">  return a + b + c;</div><div class="line">&#125;</div><div class="line"></div><div class="line">function co(fn, ...args) &#123;</div><div class="line">  let g = fn(...args);</div><div class="line">  return new Promise((resolve, reject) =&gt; &#123;</div><div class="line">    function next(lastValue) &#123;</div><div class="line">        let &#123; value, done &#125; = g.next(lastValue);</div><div class="line">        if (done) &#123;</div><div class="line">          resolve(value);</div><div class="line">        &#125; else &#123;</div><div class="line">         if (value instanceof Promise) &#123;</div><div class="line">           value.then(next, (val) =&gt; reject(val));</div><div class="line">         &#125; else &#123;</div><div class="line">           next(value)</div><div class="line">         &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    next();</div><div class="line">  &#125;);</div><div class="line">&#125;</div><div class="line">co(fn, 100).then(value =&gt; &#123;</div><div class="line">    console.log(value); // 105</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<h2 id="如何主动中止Promise调用链"><a href="#如何主动中止Promise调用链" class="headerlink" title="如何主动中止Promise调用链"></a>如何主动中止Promise调用链</h2> <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">const p1 = new Promise((resolve, reject) =&gt; &#123;</div><div class="line">   setTimeout(() =&gt; &#123; // 异步操作</div><div class="line">       resolve(&apos;start&apos;)</div><div class="line">   &#125;, 1000);</div><div class="line">&#125;);</div><div class="line"></div><div class="line">p1.then((result) =&gt; &#123;</div><div class="line">    console.log(&apos;a&apos;, result); </div><div class="line">    return Promise.reject(&apos;中断后续调用&apos;); // 此时rejected的状态将直接跳到catch里，剩下的调用不会再继续</div><div class="line">&#125;).then(result =&gt; &#123;</div><div class="line">    console.log(&apos;b&apos;, result);</div><div class="line">&#125;).then(result =&gt; &#123;</div><div class="line">    console.log(&apos;c&apos;, result);</div><div class="line">&#125;).catch(err =&gt; &#123;</div><div class="line">    console.log(err);</div><div class="line">&#125;);</div><div class="line"></div><div class="line">// a start</div><div class="line">// 中断后续调用</div></pre></td></tr></table></figure>
+<h2 id="bluebird-promisify实现（将异步回调函数api-转换为promise形式）"><a href="#bluebird-promisify实现（将异步回调函数api-转换为promise形式）" class="headerlink" title="bluebird.promisify实现（将异步回调函数api 转换为promise形式）"></a>bluebird.promisify实现（将异步回调函数api 转换为promise形式）</h2> <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line">// promisify.js</div><div class="line">module.exports = &#123;</div><div class="line">    promisify(fn)&#123;</div><div class="line">        return function () &#123;</div><div class="line">            var args = Array.from(arguments);</div><div class="line">            return new Promise(function (resolve, reject) &#123;</div><div class="line">                fn.apply(null, args.concat(function (err) &#123;</div><div class="line">                    if (err) &#123;</div><div class="line">                        reject(err);</div><div class="line">                    &#125; else &#123;</div><div class="line">                        resolve(arguments[1])</div><div class="line">                    &#125;</div><div class="line">                &#125;));</div><div class="line">            &#125;)</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">// main.js</div><div class="line">const fs = require(&apos;fs&apos;);</div><div class="line">const &#123;promisify&#125; = require(&apos;./promisify.js&apos;);</div><div class="line"></div><div class="line">const readFile = promisify(&apos;fs.readFile&apos;); // 转换异步读取</div><div class="line"></div><div class="line">// 异步文件 由回调函数形式变成promise形式</div><div class="line">readFile(&apos;./1.txt&apos;, &apos;utf8&apos;).then(data =&gt; &#123; </div><div class="line">    console.log(data);</div><div class="line">&#125;).catch(err =&gt; &#123;</div><div class="line">    console.log(err);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<h2 id="window-requestAnimationFrame兼容性处理"><a href="#window-requestAnimationFrame兼容性处理" class="headerlink" title="window.requestAnimationFrame兼容性处理"></a>window.requestAnimationFrame兼容性处理</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">window._requestAnimationFrame = (function()&#123;</div><div class="line">  return  window.requestAnimationFrame       ||</div><div class="line">          window.webkitRequestAnimationFrame ||</div><div class="line">          window.mozRequestAnimationFrame    ||</div><div class="line">          function(callback)&#123;</div><div class="line">            window.setTimeout(callback, 1000 / 60);</div><div class="line">          &#125;;</div><div class="line">&#125;)();</div></pre></td></tr></table></figure>
+<h2 id="字符串是否符合回文规则"><a href="#字符串是否符合回文规则" class="headerlink" title="字符串是否符合回文规则"></a>字符串是否符合回文规则</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">let str = &apos;My age is 0, 0 si ega ym.&apos;;</div><div class="line"></div><div class="line">方法一</div><div class="line">function palindrome(params) &#123;</div><div class="line">  params = params.replace(/[\W\s_]/ig, &apos;&apos;);</div><div class="line"> return params.toLowerCase()  === params.split(&apos;&apos;).reverse().join(&apos;&apos;).toLowerCase();</div><div class="line">&#125;</div><div class="line">console.log(palindrome(str));</div><div class="line"></div><div class="line">方法二</div><div class="line">function palindrome(params) &#123;</div><div class="line">  params = params.replace(/[\W\s_]/ig, &apos;&apos;).toLowerCase();</div><div class="line">  for (var i = 0, j = params.length-1; i&lt;j; i++, j--) &#123;</div><div class="line">    if (params[i] !== params[j]) &#123;</div><div class="line">      return false;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">  return true;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="解构"><a href="#解构" class="headerlink" title="解构"></a>解构</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">// 将 destructuringArray([1, [2, 3], 4], &quot;[a, [b], c]&quot;) =&gt; &#123;a: 1, b: 2, c: 4&#125;</div><div class="line">const targetArray = [1, [2, 3], 4];</div><div class="line">const formater = &quot;[a, [b], c]&quot;;</div><div class="line"></div><div class="line">const destructuringArray = (values, keys) =&gt; &#123;</div><div class="line">  try &#123;</div><div class="line">    const obj = &#123;&#125;;</div><div class="line">    if (typeof keys === &apos;string&apos;) &#123;</div><div class="line">      keys = JSON.parse(keys.replace(/\w+/g, &apos;&quot;$&amp;&quot;&apos;));</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    const iterate = (values, keys) =&gt;</div><div class="line">      keys.forEach((key, i) =&gt; &#123;</div><div class="line">        if(Array.isArray(key)) iterate(values[i], key)</div><div class="line">        else obj[key] = values[i]</div><div class="line">      &#125;)</div><div class="line">      </div><div class="line">    iterate(values, keys)</div><div class="line">    </div><div class="line">    return obj;</div><div class="line">  &#125; catch (e) &#123;</div><div class="line">    console.error(e.message);</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="数组展平"><a href="#数组展平" class="headerlink" title="数组展平"></a>数组展平</h2><blockquote>
+<p>将[[1, 2], 3, [[[4], 5]]] 展平为 [1, 2, 3, 4, 5]<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">let arr = [[1, 2], 3, [[[4], 5]]]; // 数组展平</div><div class="line">function flatten(arr) &#123;</div><div class="line">    return [].concat(</div><div class="line">        ...arr.map(x =&gt; Array.isArray(x) ? flatten(x) : x)</div><div class="line">    )</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+</blockquote>
+<h2 id="二分查找"><a href="#二分查找" class="headerlink" title="二分查找"></a>二分查找</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line">const arr = [1, 2, 3, 4, 5, 6, 7, 8];</div><div class="line">// 二分查找 递归 由中间开始往两边查找 前提是有序的数组 返回对应的索引位置</div><div class="line">function binarySearch1(arr, dest, start = 0, end = data.length) &#123;</div><div class="line">	if (start &gt; end) &#123;</div><div class="line">		return -1</div><div class="line">	&#125;</div><div class="line">	let midIndex = Math.floor((start + end) / 2); // 中间位置索引</div><div class="line">	let mid = arr[midIndex]; // 中间值</div><div class="line"></div><div class="line">	if (mid == dest) &#123;</div><div class="line">		return midIndex;</div><div class="line">	&#125;</div><div class="line">	if (dest &lt; mid) &#123; // 要找的比中间值小 就从中间往开头找 一直到0</div><div class="line">		return binarySearch1(arr, dest, 0, midIndex - 1);</div><div class="line">	&#125;</div><div class="line">	if (dest &gt; mid) &#123; // 要找的比中间值大 就从中间往后找 一直到end结束</div><div class="line">		return binarySearch1(arr, dest, midIndex + 1, end);</div><div class="line">	&#125;</div><div class="line">	return -1; // 找不到返回-1</div><div class="line">&#125;</div><div class="line">console.log(binarySearch1(arr, 7, 3, 6)); // 6</div><div class="line"></div><div class="line">// 非递归 arr前提有序数组 （从小到大）返回对应的索引位置 </div><div class="line">function binarySearch2(arr, dest) &#123;</div><div class="line">	let max = arr.length - 1;</div><div class="line">	let min = 0;</div><div class="line">	while (min &lt;= max) &#123;</div><div class="line">		let mid = Math.floor((max + min) / 2); // mid中间位置索引</div><div class="line">		if (dest &lt; arr[mid]) &#123; // 如果要找的这项比中间项还要小 说明应该在mid中间位置前面 修改最大边界值max=mid-1 </div><div class="line">			max = mid - 1;</div><div class="line">		&#125; else if (dest &gt; arr[mid]) &#123; // 如果要找的这项比中间项还要大 说明应该在mid中间位置的后面 修改最小边界值min=mid+1</div><div class="line">			min = mid + 1;</div><div class="line">		&#125; else &#123;</div><div class="line">			return mid;</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">	return -1; // 找不到返回-1</div><div class="line">&#125;</div><div class="line">console.log(binarySearch2(arr, 3)); // 2</div></pre></td></tr></table></figure>
+<h2 id="找出数组中重复出现过的元素"><a href="#找出数组中重复出现过的元素" class="headerlink" title="找出数组中重复出现过的元素"></a>找出数组中重复出现过的元素</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">// 例如：[1，2，4，4，3，3，1，5，3]</div><div class="line">// 输出：[1，3，4]</div><div class="line">let arr = [1, 2, 4, 4, 3, 3, 1, 5, 3];</div><div class="line"></div><div class="line">// 方法一</div><div class="line">function repeat1(arr)&#123;</div><div class="line">	var result = [], map = &#123;&#125;;</div><div class="line">	arr.map(function(num)&#123;</div><div class="line">	if(map[num] === 1) result.push(num); // 等于1说明之前出现过一次 这次重复出现了</div><div class="line">		map[num] = (map[num] || 0) + 1; // 微妙之处 开始第一次出现无值 记为 0 + 1 = 1 下一次从1开始累加</div><div class="line">	&#125;);</div><div class="line">	return result;</div><div class="line">&#125;</div><div class="line">console.log(repeat1(arr));</div><div class="line"></div><div class="line">// 方法二</div><div class="line"></div><div class="line">function repeat(arr) &#123;</div><div class="line">    let result = arr.filter((x, i, self) =&gt; &#123;</div><div class="line">        return self.indexOf(x) === i &amp;&amp; self.lastIndexOf(x) !== i</div><div class="line">    &#125;); // </div><div class="line">    return result;</div><div class="line">&#125;</div><div class="line">console.log(repeat(arr));</div></pre></td></tr></table></figure>
+<h2 id="数组中按照数字重复出现的次数进行排序"><a href="#数组中按照数字重复出现的次数进行排序" class="headerlink" title="数组中按照数字重复出现的次数进行排序"></a>数组中按照数字重复出现的次数进行排序</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line">// 如果次数相同 则按照值排序 比如  2, 2, 2和 1, 1, 1  应排序为 [1, 1, 1, 2, 2, 2]</div><div class="line">// 比如 [1,2,1,2,1,3,4,5,4,5,5,2,2] =&gt; [3, 4, 4, 1, 1, 1, 5, 5, 5, 2, 2, 2, 2]</div><div class="line"></div><div class="line">let arr = [9, 7, 7, 1, 2, 1, 2, 1, 3, 4, 5, 4, 5, 5, 2, 2];</div><div class="line">function sortArray(arr) &#123;</div><div class="line">    let obj = &#123;&#125;;</div><div class="line">    let newArr = [];</div><div class="line">    for(let i = 0; i &lt; arr.length; i++) &#123;</div><div class="line">      let cur = arr[i];</div><div class="line">      if(obj[cur])&#123;</div><div class="line">        obj[cur].push(cur);</div><div class="line">        continue;</div><div class="line">      &#125;</div><div class="line">      obj[cur] = [cur];</div><div class="line">    &#125;</div><div class="line">    for(let k in obj) &#123;</div><div class="line">      if(obj.hasOwnProperty(k)) &#123;</div><div class="line">        newArr.push(obj[k])</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">    newArr.sort((a, b) =&gt; &#123;</div><div class="line">      if(a.length === b.length)&#123;</div><div class="line">        return a[0] - b[0];</div><div class="line">      &#125;</div><div class="line">        return a.length - b.length;</div><div class="line">    &#125;);</div><div class="line">    newArr = newArr.reduce((prev, cur) =&gt; prev.concat(cur));</div><div class="line">    return newArr;</div><div class="line">  &#125;</div><div class="line">  console.log(sortArray(arr)); // [ 3, 9, 4, 4, 7, 7, 1, 1, 1, 5, 5, 5, 2, 2, 2, 2 ]</div></pre></td></tr></table></figure>
+<h2 id="不用循环，创建一个长度为-100-的数组，并且每个元素的值等于它的下标。"><a href="#不用循环，创建一个长度为-100-的数组，并且每个元素的值等于它的下标。" class="headerlink" title="不用循环，创建一个长度为 100 的数组，并且每个元素的值等于它的下标。"></a>不用循环，创建一个长度为 100 的数组，并且每个元素的值等于它的下标。</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">// 方法一 递归写法</div><div class="line">function createArray(len, arr = []) &#123;</div><div class="line"></div><div class="line">    if (len &gt; 0) &#123;</div><div class="line">        arr[--len] = len;</div><div class="line">        createArray(len, arr);</div><div class="line">    &#125;</div><div class="line">    return arr;</div><div class="line">&#125;</div><div class="line">console.log(createArray(100)); </div><div class="line"></div><div class="line">// 方法二</div><div class="line"></div><div class="line">// 下面评论中@MaDivH 提供的实现方法 长度为 100 的数组 </div><div class="line">Array(100).fill().map((_,i)=&gt;i+1);</div><div class="line"></div><div class="line">// 方法三</div><div class="line">[...Array(100).keys()]</div></pre></td></tr></table></figure>
+<h2 id="根据关键词找出-所在对象id"><a href="#根据关键词找出-所在对象id" class="headerlink" title="根据关键词找出 所在对象id"></a>根据关键词找出 所在对象id</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line">var docs = [</div><div class="line">    &#123;</div><div class="line">        id: 1,</div><div class="line">        words: [&apos;hello&apos;, &quot;world&quot;]</div><div class="line">    &#125;, &#123;</div><div class="line">        id: 2,</div><div class="line">        words: [&apos;hello&apos;, &quot;hihi&quot;]</div><div class="line">    &#125;, &#123;</div><div class="line">        id: 3,</div><div class="line">        words: [&apos;haha&apos;, &quot;hello&quot;]</div><div class="line">    &#125;, &#123;</div><div class="line">        id: 4,</div><div class="line">        words: [&apos;world&apos;, &quot;nihao&quot;]</div><div class="line">    &#125;</div><div class="line">];</div><div class="line">findDocList(docs, [&apos;hello&apos;]) // 文档id1，文档id2，文档id3</div><div class="line">findDocList(docs, [&apos;hello&apos;, &apos;world&apos;]) // 文档id1</div><div class="line">function findDocList(docs, word = []) &#123;</div><div class="line">    if (word.constructor !== Array) return;</div><div class="line">    let ids = [];</div><div class="line">    for (let i = 0; i &lt; docs.length; i++) &#123;</div><div class="line">        let &#123;id, words&#125; = docs[i];</div><div class="line">        let flag = word.every((item) =&gt; &#123;</div><div class="line">            return words.indexOf(item) &gt; -1;</div><div class="line">        &#125;);</div><div class="line">        flag &amp;&amp; ids.push(id);</div><div class="line">    &#125;</div><div class="line">    return ids;</div><div class="line">&#125;</div><div class="line">findDocList(docs, [&apos;hello&apos;, &apos;world&apos;]);</div></pre></td></tr></table></figure>
+<h2 id="getElementsByClassName-兼容写法"><a href="#getElementsByClassName-兼容写法" class="headerlink" title="getElementsByClassName 兼容写法"></a>getElementsByClassName 兼容写法</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">function getByClass(cName) &#123;</div><div class="line">    if (&apos;getElementsByClassName&apos; in this) &#123;</div><div class="line">        return this.getElementsByClassName(cName);</div><div class="line">    &#125;</div><div class="line">    cName = cName.replace(/(^\s+|\s+$)/g, &apos;&apos;).split(/\s+/g);</div><div class="line">    let eles = this.getElementsByTagName(&apos;*&apos;);</div><div class="line">   for (let i = 0; i &lt; cName.length; i++) &#123;</div><div class="line">      let reg = new RegExp(`(^| )$&#123;cName[i]&#125;( |$)`);</div><div class="line">      let temp = [];</div><div class="line">      for (let j = 0; j &lt; eles.length; j++) &#123;</div><div class="line">          let cur = eles[j];</div><div class="line">          let &#123;className&#125; = cur;</div><div class="line">          if (reg.test(className)) &#123;</div><div class="line">              temp.push(cur);</div><div class="line">          &#125;</div><div class="line">      &#125;</div><div class="line">      eles = temp;</div><div class="line">   &#125;</div><div class="line">   return eles;</div><div class="line">&#125;</div><div class="line">console.log(content.getByClass(&apos;c1 c2 &apos;));</div></pre></td></tr></table></figure>
+<h2 id="插入排序"><a href="#插入排序" class="headerlink" title="插入排序"></a>插入排序</h2><blockquote>
+<p>插入排序 从后往前比较  直到碰到比当前项 还要小的前一项时 将这一项插入到前一项的后面<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">function insertSort(arr) &#123;</div><div class="line">  let len = arr.length;</div><div class="line">  let preIndex, current;</div><div class="line">  for (let i = 1; i &lt; len; i++) &#123;</div><div class="line">    preIndex = i - 1;</div><div class="line">    current = arr[i]; // 当前项</div><div class="line">    while (preIndex &gt;= 0 &amp;&amp; arr[preIndex] &gt; current) &#123;</div><div class="line">      arr[preIndex + 1] = arr[preIndex]; // 如果前一项大于当前项 则把前一项往后挪一位</div><div class="line">      preIndex-- // 用当前项继续和前面值进行比较</div><div class="line">    &#125;</div><div class="line">    arr[preIndex + 1] = current; // 如果前一项小于当前项则 循环结束 则将当前项放到 前一项的后面</div><div class="line">  &#125;</div><div class="line">  return arr;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+</blockquote>
+<h2 id="选择排序"><a href="#选择排序" class="headerlink" title="选择排序"></a>选择排序</h2><blockquote>
+<p>选择排序 每次拿当前项与后面其他项进行比较 得到最小值的索引位置 然后把最小值和当前项交换位置</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">function selectSort(arr) &#123;</div><div class="line">  let len = arr.length;</div><div class="line">  let temp = null;</div><div class="line">  let minIndex = null;</div><div class="line">  for (let i = 0; i &lt; len - 1; i++) &#123; // 把当前值的索引作为最小值的索引一次去比较</div><div class="line">    minIndex = i; // 假设当前项索引 为最小值索引</div><div class="line">    for (let j = i + 1; j &lt; len; j++) &#123; // 当前项后面向一次比小</div><div class="line">      if (arr[j] &lt; arr[minIndex]) &#123; // 比假设的值还要小 则保留最小值索引</div><div class="line">        minIndex = j; // 找到最小值的索引位置</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">    // 将当前值和比较出的最小值交换位置</div><div class="line">    if (i !== minIndex) &#123;</div><div class="line">       temp = arr[i]</div><div class="line">       arr[i] = arr[minIndex];</div><div class="line">       arr[minIndex] = temp;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">  return arr;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="冒泡排序"><a href="#冒泡排序" class="headerlink" title="冒泡排序"></a>冒泡排序</h2><blockquote>
+<p>冒泡排序 相邻两项进行比较 如果当前值大于后一项 则交换位置</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">function bubleSort(arr) &#123;</div><div class="line">  let length = arr.length;</div><div class="line">  let temp = null;</div><div class="line">  for (let i = 0; i &lt; length - 1; i++) &#123; // 控制轮数</div><div class="line">    let flag = false; // 当前这轮是否交换过标识</div><div class="line">    for (let l = 0; l &lt; length - i - 1; l++) &#123; // 控制每轮比较次数</div><div class="line">      if (arr[l] &gt; arr[l + 1]) &#123;</div><div class="line">        temp = arr[l];</div><div class="line">        arr[l] = arr[l + 1];</div><div class="line">        arr[l + 1] = temp;</div><div class="line">        flag = true; // 如果发生过交换flag则为true</div><div class="line">      &#125; </div><div class="line">    &#125;</div><div class="line">    if (!flag) &#123; // 优化  如果从头到尾比较一轮后 flag依然为false说明 已经排好序了 没必要在继续下去</div><div class="line">      temp = null;</div><div class="line">      return arr;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="快速排序（递归）"><a href="#快速排序（递归）" class="headerlink" title="快速排序（递归）"></a>快速排序（递归）</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">function quickSort(arr) &#123;</div><div class="line">    if (arr.length &lt;= 1) return arr;</div><div class="line">    let midIndex = Math.floor(arr.length / 2);</div><div class="line">    let midNum = arr.splice(midIndex, 1)[0];</div><div class="line">    let left = [];</div><div class="line">    let right = [];</div><div class="line">    for(let i = 0; i &lt; arr.length; i++) &#123;</div><div class="line">        let cur = arr[i];</div><div class="line">        if (cur &lt;= midNum) &#123;</div><div class="line">            left.push(cur);</div><div class="line">        &#125; else &#123;</div><div class="line">            right.push(cur);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    return quickSort(left).concat(midNum, quickSort(right));</div><div class="line">&#125;</div><div class="line"></div><div class="line">let arr = [2, 4, 12, 9, 22, 10, 18, 6];</div><div class="line">quickSort(arr);</div></pre></td></tr></table></figure>
+<h2 id="数组去重几种方法"><a href="#数组去重几种方法" class="headerlink" title="数组去重几种方法"></a>数组去重几种方法</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div></pre></td><td class="code"><pre><div class="line">const arr = [1, 2, 1, 2, 3, 4, 2, 1, 3];</div><div class="line"></div><div class="line">// 1 ES6</div><div class="line">let newArr = [...new Set(arr)];</div><div class="line"></div><div class="line">// 2</div><div class="line">const arr = [1, 2, 1, 2, 3, 4, &apos;l&apos;, 2, 1, 3, &apos;l&apos;];</div><div class="line">const newArr = arr.filter(function(ele, index, array) &#123;</div><div class="line">	return index === array.indexOf(ele)</div><div class="line">&#125;);</div><div class="line">console.log(newArr); // [ 1, 2, 3, 4, &apos;l&apos; ]</div><div class="line"></div><div class="line">// 3</div><div class="line">Array.prototype.unique2 = function() &#123;</div><div class="line">    let newArr = [];</div><div class="line">    let len = this.length;</div><div class="line">    for(let i = 0; i &lt; len; i++) &#123;</div><div class="line">        let cur = this[i];</div><div class="line">        if(newArr.indexOf(cur) === -1) &#123;</div><div class="line">            newArr[newArr.length] = cur;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    return newArr;</div><div class="line">&#125;</div><div class="line">console.log(arr.unique1());</div><div class="line"></div><div class="line">// 4</div><div class="line">Array.prototype.unique3 = function() &#123;</div><div class="line">    let newArr = this.slice(0);</div><div class="line">    let len = this.length;</div><div class="line">    let obj = &#123;&#125;;</div><div class="line">    for(let i = 0; i &lt; len; i++) &#123;</div><div class="line">        let cur = newArr[i];</div><div class="line">        if(obj[cur]) &#123;</div><div class="line">            newArr[i] = newArr[newArr.length - 1];</div><div class="line">            newArr.length--;</div><div class="line">            i--;</div><div class="line">            continue;</div><div class="line">        &#125;</div><div class="line">        obj[cur] = cur;</div><div class="line">    &#125;</div><div class="line">    return newArr;</div><div class="line">&#125;</div><div class="line">console.log(arr.unique3());</div><div class="line"></div><div class="line">// 5</div><div class="line">Array.prototype.unique4 = function() &#123;</div><div class="line">    let json = &#123;&#125;, newArr = [], len = this.length;</div><div class="line">    for(var i = 0; i &lt; len; i++) &#123;</div><div class="line">        let cur = this[i];</div><div class="line">        if (typeof json[cur] == &quot;undefined&quot;) &#123;</div><div class="line">            json[cur] = true;</div><div class="line">            newArr.push(cur)</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    return newArr;</div><div class="line">&#125;</div><div class="line">console.log(arr.unique4());</div></pre></td></tr></table></figure>
+<h2 id="千分符"><a href="#千分符" class="headerlink" title="千分符"></a>千分符</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">let str1 = &apos;2123456789&apos;;</div><div class="line">let str2 = &apos;2123456789.12&apos;;</div><div class="line"></div><div class="line">// 利用正向预查 匹配 开头一个数字\d 后面匹配这个数字后面必须是三个数字为一组为结尾或小数为结尾</div><div class="line">function thousandth(str) &#123; </div><div class="line">    let reg = /\d(?=(?:\d&#123;3&#125;)+(?:\.\d+|$))/g; </div><div class="line">    return str.replace(reg, (...rest) =&gt; rest[0] + &apos;,&apos;);</div><div class="line">&#125;</div><div class="line">console.log(thousandth(str1)); // 2,123,456,789</div><div class="line">console.log(thousandth(str2)); // 2,123,456,789.12</div></pre></td></tr></table></figure>
+<h2 id="在一个数组中-如a、b两项-要保证a和b两项的差-与-a和b两项索引的差-的相加后的结果max-是数组中其他两项max-中的最大值-找出符合条件两项a-b的值-不可以排序-或改变数组位置-如："><a href="#在一个数组中-如a、b两项-要保证a和b两项的差-与-a和b两项索引的差-的相加后的结果max-是数组中其他两项max-中的最大值-找出符合条件两项a-b的值-不可以排序-或改变数组位置-如：" class="headerlink" title="在一个数组中 如a、b两项, 要保证a和b两项的差 与 a和b两项索引的差 的相加后的结果max 是数组中其他两项max 中的最大值 找出符合条件两项a, b的值 (不可以排序 或改变数组位置) 如："></a>在一个数组中 如a、b两项, 要保证a和b两项的差 与 a和b两项索引的差 的相加后的结果max 是数组中其他两项max 中的最大值 找出符合条件两项a, b的值 (不可以排序 或改变数组位置) 如：</h2><p>let max =  (a - b) + (a的索引- b的索引);<br>求a b</p>
+<p>答案：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">// 思路：其实也就是找出数组中当前的每一项与自身索引相加后的和的最大值以及与索引相加后的最小值的和 找出符合条件的两项即可 如 let result = (maxItem-minItem) + (maxIndex-minIndex) 等价于 (maxItem+maxIndex) - (minItem+minIndex)</div><div class="line"></div><div class="line">// let arr = [1, 2, 3, 4, 5, 6]; // 最简单的测试数组 最小项1 最大项6</div><div class="line">// 很显然这个数组中最大值6与索引相加(6+5)是当中最大值11 1与索引相加(1+0)为当中的最小值1（6 + 5）-（1+0）= 10</div><div class="line"></div><div class="line">// 假设法</div><div class="line">let arr = [2, 10, 9, 1, 8, 3, 4];</div><div class="line">let minItem = arr[0]; // 假设第一项与自身索引的和是最小值 索引为0因此省略</div><div class="line">let maxItem = arr[0]; // 假设第一项与自身索引的和是最大值 索引为0因此省略</div><div class="line">let min = minItem; // 最小项</div><div class="line">let max = maxItem; // 最大项</div><div class="line">let minIndex = 0; // 最小项索引</div><div class="line">let maxIndex = 0; // 最大项索引</div><div class="line">for(let i = 1; i &lt; arr.length; i++) &#123;</div><div class="line">    let cur = arr[i] + i; // 当前项和自身索引的和</div><div class="line">    cur &lt; minItem ? (minItem = cur, min = arr[i], minIndex = i) : null;</div><div class="line">    cur &gt; maxItem ? (maxItem = cur, max = arr[i], maxIndex = i) : null;</div><div class="line">&#125;</div><div class="line">console.log(maxItem, minItem); // 最大项与索引的和 最小项与索引的和</div><div class="line">console.log(max, min); // 最大项 最小项</div><div class="line">console.log(maxIndex, minIndex); // 最大项的索引 最小项的索引</div></pre></td></tr></table></figure></p>
+<h2 id="检测-字符串中括号表达式是否平衡"><a href="#检测-字符串中括号表达式是否平衡" class="headerlink" title="检测 字符串中括号表达式是否平衡"></a>检测 字符串中括号表达式是否平衡</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line">// 如 balance(&apos;[()&apos;) = false; balance(&apos;[()()()]&apos;) = true</div><div class="line">// 一</div><div class="line">function match(a, b) &#123;</div><div class="line">	return (a === &apos;(&apos; &amp;&amp; b === &apos;)&apos;) || (a === &apos;)&apos; &amp;&amp; b === &apos;(&apos;) || (a === &apos;[&apos; &amp;&amp; b === &apos;]&apos;) || (a === &apos;]&apos; &amp;&amp; b === &apos;[&apos;);</div><div class="line">&#125;</div><div class="line"></div><div class="line">function balance(str) &#123;</div><div class="line">	if (str.length % 2 === 0) &#123;</div><div class="line">		let len = str.length;</div><div class="line">		for (let i = 0, j = len - 1; i &lt; len / 2; i++, j--) &#123;</div><div class="line">			if (!match(str[i], str[j])) &#123;</div><div class="line">				return false;</div><div class="line">			&#125;</div><div class="line">		&#125;</div><div class="line">		return true;</div><div class="line">	&#125;</div><div class="line">	return false;</div><div class="line">&#125;</div><div class="line">console.log(balance(&apos;[()()()]&apos;)); // true</div><div class="line">console.log(balance(&apos;[()&apos;)); // false</div><div class="line">console.log(balance(&apos;[]()&apos;)); // false</div><div class="line">// 二</div><div class="line">function is_balance(str) &#123;</div><div class="line">	return [...str].reduce((stack, c) =&gt; &#123;</div><div class="line">		match(stack[stack.length - 1], c) ?</div><div class="line">			stack.pop() : stack.push(c);</div><div class="line">		return stack;</div><div class="line">	&#125;, []).length === 0;</div><div class="line">&#125;</div><div class="line">console.log(is_balance(&apos;[()()()]&apos;)); // true</div><div class="line">console.log(is_balance(&apos;[()&apos;)); // false</div><div class="line">console.log(is_balance(&apos;[]()&apos;)); // false</div></pre></td></tr></table></figure>
+<h2 id="求相邻两项最大和"><a href="#求相邻两项最大和" class="headerlink" title="求相邻两项最大和"></a>求相邻两项最大和</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">// 一</div><div class="line">let arr1 = [-1, 3, 1, -5, 2]; // 如 [2, 4, -4, -3] =&gt; 4</div><div class="line">function sum(arr) &#123;</div><div class="line">    let prev = arr[0];</div><div class="line">    let sumArr = [];</div><div class="line">    let len = arr.length;</div><div class="line">    for(let i = 1; i &lt; len; i++) &#123;</div><div class="line">        let cur = arr[i];</div><div class="line">        sumArr.push(cur + prev);</div><div class="line">        prev = cur;</div><div class="line">    &#125;   </div><div class="line">    return Math.max(...sumArr);</div><div class="line">&#125;</div><div class="line">console.log(sum(arr1));</div><div class="line"></div><div class="line">// 二</div><div class="line">function maxsum(arr) &#123;</div><div class="line">    const M = [arr[0]];</div><div class="line">    let max = M[0];</div><div class="line">    </div><div class="line">    for(let i = 1; i &lt; arr.length; i++) &#123;</div><div class="line">        M[i] = Math.max(arr[i], M[i - 1] + arr[i]);</div><div class="line">        max = Math.max(M[i], max);</div><div class="line">    &#125;</div><div class="line">    return max;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="字符串去除相邻的重复项-如：’aabbccddeexxxxaa’-gt-‘abcdexa’"><a href="#字符串去除相邻的重复项-如：’aabbccddeexxxxaa’-gt-‘abcdexa’" class="headerlink" title="字符串去除相邻的重复项 如：’aabbccddeexxxxaa’ =&gt; ‘abcdexa’"></a>字符串去除相邻的重复项 如：’aabbccddeexxxxaa’ =&gt; ‘abcdexa’</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">// 正则表达式</div><div class="line">let str = &apos;aabbccddeexxxxaa&apos;;</div><div class="line">function uniq1(str) &#123;</div><div class="line">    // return str.replace(/([a-z])(\1)&#123;1,&#125;/g, &apos;$1&apos;);</div><div class="line">    return str.replace(/(.)(?=\1)/g, &apos;&apos;);</div><div class="line">&#125;</div><div class="line">console.log(uniq1(str));</div><div class="line"></div><div class="line">// 数组方式</div><div class="line">function uniq2(str) &#123;</div><div class="line">    let arr = str.split(&apos;&apos;);</div><div class="line">    let newArr = [arr[0]];</div><div class="line">    for(let i = 1; i &lt; arr.length; i++) &#123;</div><div class="line">        let cur = arr[i];</div><div class="line">        if (cur !== newArr[newArr.length - 1]) &#123;</div><div class="line">            newArr.push(cur);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    return newArr.join(&apos;&apos;);</div><div class="line">&#125;</div><div class="line">console.log(uniq2(str));</div></pre></td></tr></table></figure>
+<h2 id="害怕手写代码-😨-只能硬着头皮"><a href="#害怕手写代码-😨-只能硬着头皮" class="headerlink" title="害怕手写代码 😨 只能硬着头皮"></a>害怕手写代码 😨 只能硬着头皮</h2><blockquote>
+<p>欢迎大家和我一起来补充 上面很多也都是可以优化的 我还是一个成长中的小白，只是分享和记录下自己碰到的问题 后续会持续更新… </p>
+</blockquote>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Javascript</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">JavaScript数据结构与算法</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">JS代码手写题</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/03/13/几道JS代码手写题以及JavaScript数据结构与算法资源分享/">展开全文 >></a>
         </p>
       
 
@@ -323,271 +805,9 @@
 
 
   
-    <article id="post-JavaScript运行机制详解" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/01/17/JavaScript运行机制详解/">JavaScript运行机制深入浅出学习</a>
-    </h1>
-  
-
-        
-        <a href="/2018/01/17/JavaScript运行机制详解/" class="archive-article-date">
-  	<time datetime="2018-01-16T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-17</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="一、JavaScript单线程模型"><a href="#一、JavaScript单线程模型" class="headerlink" title="一、JavaScript单线程模型"></a>一、JavaScript单线程模型</h2><blockquote>
-<p>JavaScript是单线程的，JavaScript只在一个线程上运行，但是浏览器是多线程的，典型的浏览器有如下线程：</p>
-<ul>
-<li>JavaScript引擎线程</li>
-<li>GUI渲染线程</li>
-<li>浏览器事件触发线程</li>
-<li>浏览器Http请求线程</li>
-</ul>
-</blockquote>
-        
-          <a class="article-more-a" href="/2018/01/17/JavaScript运行机制详解/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">JavaScript运行机制</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Event Loop(事件循环)</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">process.nextTick</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/01/17/JavaScript运行机制详解/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Promise详解和实现" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/01/12/Promise详解和实现/">Promise 详解与实现</a>
-    </h1>
-  
-
-        
-        <a href="/2018/01/12/Promise详解和实现/" class="archive-article-date">
-  	<time datetime="2018-01-12T04:46:25.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-12</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="1-什么是Promise"><a href="#1-什么是Promise" class="headerlink" title="1.什么是Promise?"></a>1.什么是Promise?</h3><blockquote>
-<p>Promise是JS异步编程中的重要概念，异步抽象处理对象，是目前比较流行Javascript异步编程解决方案之一</p>
-</blockquote>
-        
-          <a class="article-more-a" href="/2018/01/12/Promise详解和实现/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Promise</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Javascript</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">JS异步编程</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/01/12/Promise详解和实现/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-TCP_IP协议理解" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/01/05/TCP_IP协议理解/">TCP/IP协议理解</a>
-    </h1>
-  
-
-        
-        <a href="/2018/01/05/TCP_IP协议理解/" class="archive-article-date">
-  	<time datetime="2018-01-04T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-05</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="一、协议"><a href="#一、协议" class="headerlink" title="一、协议"></a>一、协议</h2><p>在计算机网络与信息通讯领域里，人们经常提及 “协议” 一词。互联网中常用的协议有HTTP、TCP、IP等。</p>
-        
-          <a class="article-more-a" href="/2018/01/05/TCP_IP协议理解/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">OSI七层模型</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">TCP/IP协议</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">TCP三次握手 四次挥手</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/01/05/TCP_IP协议理解/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
     </nav>
   
 
@@ -927,6 +1147,26 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Nodejs</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">webpack4.0</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">JavaScript</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Babel</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">JavaScript数据结构与算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">JS代码手写题</a>
               </li>
             
             <div class="clearfix"></div>
